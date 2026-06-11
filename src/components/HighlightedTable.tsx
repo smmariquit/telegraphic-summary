@@ -1,3 +1,5 @@
+// src/components/HighlightedTable.tsx
+
 "use client";
 
 import { TableData, HighlightedCell } from "@/types";

@@ -1,3 +1,5 @@
+// src/types/index.ts
+
 export interface TableCell {
   value: string | number;
   row: number;

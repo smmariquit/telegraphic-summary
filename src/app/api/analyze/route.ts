@@ -1,3 +1,5 @@
+// src/app/api/analyze/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { TableData, AnalysisResult } from "@/types";

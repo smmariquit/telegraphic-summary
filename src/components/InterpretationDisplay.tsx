@@ -1,3 +1,5 @@
+// src/components/InterpretationDisplay.tsx
+
 "use client";
 
 import { PatternInsight } from "@/types";

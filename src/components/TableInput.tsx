@@ -1,3 +1,5 @@
+// src/components/TableInput.tsx
+
 "use client";
 
 import { useState } from "react";

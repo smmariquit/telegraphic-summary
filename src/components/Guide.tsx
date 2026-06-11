@@ -1,3 +1,5 @@
+// src/components/Guide.tsx
+
 "use client";
 
 interface GuideProps {
