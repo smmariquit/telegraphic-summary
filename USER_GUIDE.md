@@ -38,13 +38,13 @@ A **telegraphic summary** is a technique used in scientific writing. The name co
 In research, a telegraphic summary works like this:
 
 1. **First, abbreviate**: Write your findings in a very short form, like notes to yourself
-   - Example: "Yield: A=B>C=D" (meaning treatments A and B gave similar yields, both higher than C and D)
+ - Example: "Yield: A=B>C=D" (meaning treatments A and B gave similar yields, both higher than C and D)
 
 2. **Then, expand**: Turn those notes into complete sentences
-   - Example: "Treatments A and B produced similar fruit yields, both significantly higher than treatments C and D."
+ - Example: "Treatments A and B produced similar fruit yields, both higher than treatments C and D."
 
 3. **Finally, interpret**: Explain what this means for your research
-   - Example: "This suggests that the organic fertilizers (A and B) are more effective for fruit production than the synthetic alternatives (C and D), possibly due to better nutrient availability over time."
+ - Example: "This suggests that the organic fertilizers (A and B) are more effective for fruit production than the synthetic alternatives (C and D), possibly due to better nutrient availability over time."
 
 This tool automates all three steps for you!
 
@@ -118,7 +118,7 @@ The tool includes three sample datasets to help you practice. Here's what each o
 | Fruits/plant | How many fruits each plant produced | Count |
 | Mean weight of fruits | Average weight of a single fruit | Grams (g) |
 
-**The letters after numbers (like "200a" or "600b"):** These are statistical groupings. Values with the same letter are not significantly different from each other. Different letters mean the difference is statistically significant.
+**The letters after numbers (like "200a" or "600b"):** These are statistical groupings. Values with the same letter are not different from each other. Different letters mean the difference is statistically significant.
 
 ---
 
@@ -128,11 +128,11 @@ The tool includes three sample datasets to help you practice. Here's what each o
 
 | Measurement | What it means | Units |
 |-------------|---------------|-------|
-| E. coli | A common bacteria that can cause food poisoning | — |
-| S. aureus | Bacteria that causes skin infections ("staph") | — |
-| P. aeruginosa | Bacteria that infects wounds and lungs | — |
-| K. pneumoniae | Bacteria that causes pneumonia | — |
-| S. pneumoniae | Another pneumonia-causing bacteria | — |
+| E. coli | A common bacteria that can cause food poisoning |: |
+| S. aureus | Bacteria that causes skin infections ("staph") |: |
+| P. aeruginosa | Bacteria that infects wounds and lungs |: |
+| K. pneumoniae | Bacteria that causes pneumonia |: |
+| S. pneumoniae | Another pneumonia-causing bacteria |: |
 
 **The numbers (like "28" or "0"):** These are **inhibition zones** measured in millimeters (mm). This is the area around the antibiotic where bacteria cannot grow.
 - **Higher numbers = better** (the antibiotic kills more bacteria)
@@ -182,7 +182,7 @@ The tool looks for six types of interesting patterns in your data:
 ---
 
 ### 3. Correlation 🟣
-**What it means:** Two things seem connected — when one goes up, the other also goes up (or down).
+**What it means:** Two things seem connected: when one goes up, the other also goes up (or down).
 
 *Example:* "Students who were more satisfied also had higher test scores."
 
@@ -230,11 +230,11 @@ A list of all the interesting things the tool found in your data. Each pattern s
 
 ### Three Levels of Summary
 
-1. **Telegraphic Summary** — Very brief, uses abbreviations. Good for your personal notes.
+1. **Telegraphic Summary**: Very brief, uses abbreviations. Good for your personal notes.
 
-2. **Expanded Idea** — The same information written as complete sentences. Good for drafting your paper.
+2. **Expanded Idea**: The same information written as complete sentences. Good for drafting your paper.
 
-3. **Full Interpretation** — A paragraph that explains what the data means and why it matters. Good for your Discussion section.
+3. **Full Interpretation**: A paragraph that explains what the data means and why it matters. Good for your Discussion section.
 
 ---
 
@@ -246,13 +246,13 @@ This tool was designed to be easy to use for everyone, including users with visu
 
 For users who find the default text too small (especially helpful for senior researchers or those with visual impairments):
 
-1. **Find the text size buttons** at the top-right corner of the page — you'll see three "A" letters of different sizes
+1. **Find the text size buttons** at the top-right corner of the page: you'll see three "A" letters of different sizes
 2. **Click the larger "A"** to increase all text on the page
 3. **Three size options are available:**
-   - **A** (small) — Normal size, good for younger users or large screens
-   - **A** (medium) — 25% larger, comfortable for extended reading
-   - **A** (large) — 50% larger, best for users who need larger text
-4. **Your preference is automatically saved** — when you return to the tool, it will remember your choice
+ - **A** (small): Normal size, good for younger users or large screens
+ - **A** (medium): 25% larger, comfortable for extended reading
+ - **A** (large): 50% larger, best for users who need larger text
+4. **Your preference is automatically saved**: when you return to the tool, it will remember your choice
 
 ### Keyboard Navigation
 
@@ -271,10 +271,10 @@ For users who cannot use a mouse or prefer keyboard controls:
 
 The tool is compatible with screen readers like JAWS, NVDA, and VoiceOver:
 
-- **All buttons and icons have text descriptions** — screen readers will announce what each button does
-- **Tables are properly labeled** — row and column headers are correctly marked so screen readers can announce which cell you're in
-- **Live announcements** — when the analysis is loading or complete, your screen reader will announce the status
-- **Highlighted cells include explanations** — the reason each cell is highlighted is available to screen readers, not just visible on hover
+- **All buttons and icons have text descriptions**: screen readers will announce what each button does
+- **Tables are properly labeled**: row and column headers are correctly marked so screen readers can announce which cell you're in
+- **Live announcements**: when the analysis is loading or complete, your screen reader will announce the status
+- **Highlighted cells include explanations**: the reason each cell is highlighted is available to screen readers, not just visible on hover
 
 ### High Contrast Support
 
@@ -303,7 +303,7 @@ The tool is fully functional on smartphones and tablets. Here's how to use it on
 
 **Analyzing Your Data:**
 - The "Analyze Table" button is full-width on mobile, making it easy to tap
-- Results appear below the table — scroll down to see them
+- Results appear below the table: scroll down to see them
 - Highlighted cells show a ★ symbol; tap and hold to see why they're highlighted
 
 **Reading Results:**
@@ -313,18 +313,18 @@ The tool is fully functional on smartphones and tablets. Here's how to use it on
 
 ### Tips for Mobile Users
 
-📱 **Rotate your phone** — For wide tables, turning your phone sideways (landscape mode) shows more columns at once
+📱 **Rotate your phone**: For wide tables, turning your phone sideways (landscape mode) shows more columns at once
 
-📱 **Pinch to zoom** — If text is too small, you can pinch-zoom on most mobile browsers. However, using the built-in text size buttons is recommended for a better experience
+📱 **Pinch to zoom**: If text is too small, you can pinch-zoom on most mobile browsers. However, using the built-in text size buttons is recommended for a better experience
 
-📱 **Use the sample data** — Entering data manually on a phone can be tedious. Consider:
-  - Loading one of the sample datasets to test the tool
-  - Preparing your data on a computer and emailing the CSV to yourself
-  - Using the "Paste CSV" option if you copy data from another app
+📱 **Use the sample data**: Entering data manually on a phone can be tedious. Consider:
+ - Loading one of the sample datasets to test the tool
+ - Preparing your data on a computer and emailing the CSV to yourself
+ - Using the "Paste CSV" option if you copy data from another app
 
-📱 **Bookmark the page** — Add the tool to your home screen for quick access:
-  - **iPhone:** Tap Share → "Add to Home Screen"
-  - **Android:** Tap Menu (⋮) → "Add to Home Screen"
+📱 **Bookmark the page**: Add the tool to your home screen for quick access:
+ - **iPhone:** Tap Share → "Add to Home Screen"
+ - **Android:** Tap Menu (⋮) → "Add to Home Screen"
 
 ### Supported Devices
 
@@ -339,15 +339,15 @@ The tool has been tested on:
 
 ## Tips for Best Results
 
-✅ **Add context** — Tell the tool what your experiment was about. This helps it give better interpretations.
+✅ **Add context**: Tell the tool what your experiment was about. This helps it give better interpretations.
 
-✅ **Use clear labels** — Make sure your row and column names clearly describe what they measure.
+✅ **Use clear labels**: Make sure your row and column names clearly describe what they measure.
 
-✅ **Include units** — Add units like (cm), (g), or (%) to your parameter names when possible.
+✅ **Include units**: Add units like (cm), (g), or (%) to your parameter names when possible.
 
-✅ **Review the output** — The AI gives suggestions based on patterns it sees. You know your research best, so use the output as a starting point, not the final word.
+✅ **Review the output**: The AI gives suggestions based on patterns it sees. You know your research best, so use the output as a starting point, not the final word.
 
-✅ **Try the sample data first** — If you're new to the tool, practice with the sample datasets before using your own data.
+✅ **Try the sample data first**: If you're new to the tool, practice with the sample datasets before using your own data.
 
 ---
 
@@ -358,7 +358,7 @@ The tool has been tested on:
 The concept of **telegraphic summary** and the methodology for interpreting research data used in this tool are based on the techniques described in the book on technical writing for research by:
 
 - **Ofelia K. Bautista**
-- **Nestor R. Bondad**  
+- **Nestor R. Bondad** 
 - **Roberto E. Bautista**
 
 Their work on scientific writing has been invaluable in helping researchers present their findings clearly and meaningfully.
