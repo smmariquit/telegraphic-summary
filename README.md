@@ -40,6 +40,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - **Repository Size:** 30 tracked files
 - **Latest Update:** `0ee67c9 chore: add stale issue and PR validators`
 
-
 ---
 *☕ If you found this project useful, you can support my work at [kape.stimmie.dev](https://kape.stimmie.dev)!*
