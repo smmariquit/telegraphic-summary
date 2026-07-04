@@ -11,9 +11,14 @@ type AnalyzeContext = {
 };
 
 export const onRequestPost = async (context: AnalyzeContext) => {
-  const openai = new OpenAI({ apiKey: context.env.OPENAI_API_KEY });
-
   try {
+    if (!context.env.OPENAI_API_KEY) {
+      console.error("Missing OPENAI_API_KEY");
+      return Response.json({ error: "Failed to analyze table data" }, { status: 500 });
+    }
+
+    const openai = new OpenAI({ apiKey: context.env.OPENAI_API_KEY });
+
     const { tableData, context: userContext } = (await context.request.json()) as {
       tableData: TableData;
       context?: string;
