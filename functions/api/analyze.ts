@@ -1,25 +1,26 @@
-// src/app/api/analyze/route.ts
+// functions/api/analyze.ts
 
-import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
-import { TableData, AnalysisResult } from "@/types";
+import type { TableData, AnalysisResult } from "../../src/types";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+type AnalyzeContext = {
+  request: Request;
+  env: {
+    OPENAI_API_KEY?: string;
+  };
+};
 
-export async function POST(request: NextRequest) {
+export const onRequestPost = async (context: AnalyzeContext) => {
+  const openai = new OpenAI({ apiKey: context.env.OPENAI_API_KEY });
+
   try {
-    const { tableData, context } = await request.json() as { 
-      tableData: TableData; 
+    const { tableData, context: userContext } = (await context.request.json()) as {
+      tableData: TableData;
       context?: string;
     };
 
     if (!tableData || !tableData.headers || !tableData.rows) {
-      return NextResponse.json(
-        { error: "Invalid table data provided" },
-        { status: 400 }
-      );
+      return Response.json({ error: "Invalid table data provided" }, { status: 400 });
     }
 
     // Format table for GPT
@@ -31,7 +32,7 @@ export async function POST(request: NextRequest) {
 TABLE DATA:
 ${tableString}
 
-${context ? `CONTEXT: ${context}` : ""}
+${userContext ? `CONTEXT: ${userContext}` : ""}
 
 Analyze this table and identify:
 1. Which specific cells contain the most striking/interesting values (highest, lowest, unexpected values, outliers)
@@ -94,7 +95,7 @@ ${tableString}
 IDENTIFIED PATTERNS:
 ${JSON.stringify(analysisData.patterns, null, 2)}
 
-${context ? `CONTEXT: ${context}` : ""}
+${userContext ? `CONTEXT: ${userContext}` : ""}
 
 Generate three levels of interpretation following research writing best practices:
 
@@ -145,27 +146,24 @@ Respond ONLY with valid JSON:
       fullInterpretation: interpretationData.fullInterpretation,
     };
 
-    return NextResponse.json(result);
+    return Response.json(result);
   } catch (error) {
     console.error("Analysis error:", error);
-    return NextResponse.json(
-      { error: "Failed to analyze table data" },
-      { status: 500 }
-    );
+    return Response.json({ error: "Failed to analyze table data" }, { status: 500 });
   }
-}
+};
 
 function formatTableForGPT(tableData: TableData): string {
   const { headers, rows } = tableData;
-  
+
   // Create header row
   let table = "| Parameter | " + headers.join(" | ") + " |\n";
   table += "|" + "----|".repeat(headers.length + 1) + "\n";
-  
+
   // Add data rows
   rows.forEach((row) => {
     table += "| " + row.join(" | ") + " |\n";
   });
-  
+
   return table;
 }
