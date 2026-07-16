@@ -1,44 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Telegraphic Summary
 
-## Getting Started
+Paste a dense data table. Get a short, plain-language readback. Runs as a static Next.js export on Cloudflare Pages; `/api/analyze` is a Pages Function.
 
-First, run the development server:
+## Local
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+For the analyze API locally you need `OPENAI_API_KEY` in the environment the Functions runtime can read (see Cloudflare section below for production).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+| Command | What it does |
+|---------|----------------|
+| `npm run dev` | Next.js dev server |
+| `npm run build` | Static export to `out/` |
+| `npm run lint` | ESLint |
 
-To learn more about Next.js, take a look at the following resources:
+## Deploy (Cloudflare Pages)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+GitHub Actions workflow `.github/workflows/deploy-cloudflare.yml` builds and runs:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+`wrangler pages deploy out --project-name=telegraphic-summary`
 
-## Deploy on Vercel
+### GitHub Actions secrets
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Name | Purpose |
+|------|---------|
+| `CLOUDFLARE_API_TOKEN` | Wrangler deploy |
+| `CLOUDFLARE_ACCOUNT_ID` | Account for Pages |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Cloudflare Pages secrets (not GitHub)
 
-## 📊 Current State of the Code
-- **Tech Stack:** React, TailwindCSS, Next.js, Node.js/NPM
-- **Repository Size:** 30 tracked files
-- **Latest Update:** `0ee67c9 chore: add stale issue and PR validators`
+| Name | Purpose |
+|------|---------|
+| `OPENAI_API_KEY` | Required by `functions/api/analyze.ts` |
 
----
-*☕ If you found this project useful, you can support my work at [kape.stimmie.dev](https://kape.stimmie.dev)!*
+Set it for production (and preview if you use preview Functions):
+
+```bash
+wrangler pages secret put OPENAI_API_KEY --project-name=telegraphic-summary
+```
+
+Or: Cloudflare dashboard → Pages → telegraphic-summary → Settings → Variables and Secrets.
+
+Without `OPENAI_API_KEY`, `POST /api/analyze` returns 500.
+
+Production: https://telegraphic-summary.pages.dev
+
+## Stack
+
+Next.js (static export), Tailwind, Cloudflare Pages + Pages Functions, OpenAI API.
