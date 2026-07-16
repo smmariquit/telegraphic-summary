@@ -110,7 +110,7 @@ export default function Home() {
       </a>
 
       {/* Header */}
-      <header className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-6 md:py-12">
+      <header className="bg-[var(--brand-header)] text-white py-6 md:py-12">
         <div className="max-w-5xl mx-auto px-4 md:px-6">
           {/* Text Size Controls */}
           <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
