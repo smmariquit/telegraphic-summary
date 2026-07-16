@@ -5,6 +5,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --brand-header: #1d4ed8;
+  --section-telegraphic: #eff6ff;
+  --section-expanded: #f0fdf4;
+  --section-interpretation: #fffbeb;
 }
 
 @theme inline {

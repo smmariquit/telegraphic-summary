@@ -74,7 +74,7 @@ export default function InterpretationDisplay({
       </section>
 
       {/* Telegraphic Summary */}
-      <section className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-md p-4 md:p-6 border-l-4 border-blue-500" aria-labelledby="telegraphic-heading">
+      <section className="bg-[var(--section-telegraphic)] rounded-lg shadow-md p-4 md:p-6 border-l-4 border-blue-500" aria-labelledby="telegraphic-heading">
         <h3 id="telegraphic-heading" className={`${t.heading} font-semibold text-gray-800 mb-3 flex items-center gap-2`}>
           <span className="w-8 h-8 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-sm font-bold" aria-hidden="true">
             2
@@ -90,7 +90,7 @@ export default function InterpretationDisplay({
       </section>
 
       {/* Expanded Idea */}
-      <section className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg shadow-md p-4 md:p-6 border-l-4 border-green-500" aria-labelledby="expanded-heading">
+      <section className="bg-[var(--section-expanded)] rounded-lg shadow-md p-4 md:p-6 border-l-4 border-green-500" aria-labelledby="expanded-heading">
         <h3 id="expanded-heading" className={`${t.heading} font-semibold text-gray-800 mb-3 flex items-center gap-2`}>
           <span className="w-8 h-8 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-sm font-bold" aria-hidden="true">
             3
@@ -106,7 +106,7 @@ export default function InterpretationDisplay({
       </section>
 
       {/* Full Interpretation */}
-      <section className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg shadow-md p-4 md:p-6 border-l-4 border-amber-500" aria-labelledby="interpretation-heading">
+      <section className="bg-[var(--section-interpretation)] rounded-lg shadow-md p-4 md:p-6 border-l-4 border-amber-500" aria-labelledby="interpretation-heading">
         <h3 id="interpretation-heading" className={`${t.heading} font-semibold text-gray-800 mb-3 flex items-center gap-2`}>
           <span className="w-8 h-8 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center text-sm font-bold" aria-hidden="true">
             4
