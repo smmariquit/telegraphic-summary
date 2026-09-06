@@ -261,29 +261,32 @@ export default function TableInput({ onChange, onObjectiveSuggested }: TableInpu
         </div>
       ) : (
         <div className="mt-[var(--space-md)]">
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
+          <div className="sheet overflow-x-auto">
+            <table>
               <thead>
-                <tr className="border-b border-rule-strong">
-                  <th scope="col" className="min-w-[13rem] py-[var(--space-2xs)] pr-[var(--space-xs)] text-left font-medium">
-                    Parameter
+                <tr>
+                  <th scope="col" className="min-w-[13rem] text-left">
+                    <span className="block px-[var(--space-xs)] py-[var(--space-2xs)] text-[length:var(--text-sm)] text-muted">
+                      Parameter
+                    </span>
                   </th>
                   {headers.map((h, i) => (
-                    <th key={i} scope="col" className="min-w-[6rem] py-[var(--space-2xs)] px-[var(--space-3xs)]">
-                      <div className="flex items-center gap-[var(--space-3xs)]">
+                    <th key={i} scope="col" className="min-w-[6.5rem]">
+                      <div className="flex items-center">
                         <input
                           type="text"
                           value={h}
                           onChange={(e) => updateHeader(i, e.target.value)}
                           aria-label={`Treatment ${i + 1} name`}
-                          className="field text-center font-medium"
+                          className="cell cell--head"
                         />
                         {headers.length > 1 && (
                           <button
                             type="button"
                             onClick={() => removeColumn(i)}
                             aria-label={`Remove column ${h || i + 1}`}
-                            className="link px-[var(--space-3xs)] text-[length:var(--text-sm)]"
+                            title="Remove column"
+                            className="ghost"
                           >
                             ×
                           </button>
@@ -291,11 +294,13 @@ export default function TableInput({ onChange, onObjectiveSuggested }: TableInpu
                       </div>
                     </th>
                   ))}
-                  <th scope="col" className="py-[var(--space-2xs)] pl-[var(--space-xs)] text-left text-[length:var(--text-xs)] font-normal text-muted">
-                    Lower is better
+                  <th scope="col" className="w-[5.5rem]">
+                    <span className="block px-[var(--space-xs)] py-[var(--space-2xs)] text-center text-[length:var(--text-xs)] leading-tight text-muted">
+                      lower is better
+                    </span>
                   </th>
-                  <th scope="col" className="w-8">
-                    <button type="button" onClick={addColumn} aria-label="Add column" className="link px-[var(--space-3xs)]">
+                  <th scope="col" className="w-[2.5rem]">
+                    <button type="button" onClick={addColumn} aria-label="Add column" title="Add column" className="ghost w-full">
                       +
                     </button>
                   </th>
@@ -303,20 +308,20 @@ export default function TableInput({ onChange, onObjectiveSuggested }: TableInpu
               </thead>
               <tbody>
                 {rows.map((row, ri) => (
-                  <tr key={ri} className="border-b border-rule">
+                  <tr key={ri}>
                     {row.map((cell, ci) => (
-                      <td key={ci} className="py-[var(--space-3xs)] px-[var(--space-3xs)]">
+                      <td key={ci}>
                         <input
                           type="text"
                           value={cell}
                           onChange={(e) => updateCell(ri, ci, e.target.value)}
                           aria-label={ci === 0 ? `Row ${ri + 1} parameter` : `Row ${ri + 1}, ${headers[ci - 1]}`}
                           placeholder={ci === 0 ? "Parameter" : "45ab"}
-                          className={`field ${ci === 0 ? "font-medium" : "text-center font-mono text-[length:var(--text-sm)]"}`}
+                          className={`cell ${ci === 0 ? "" : "cell--num"}`}
                         />
                       </td>
                     ))}
-                    <td className="pl-[var(--space-xs)] text-center">
+                    <td className="text-center">
                       <input
                         type="checkbox"
                         checked={lowerIsBetter[ri] ?? false}
@@ -330,7 +335,8 @@ export default function TableInput({ onChange, onObjectiveSuggested }: TableInpu
                         type="button"
                         onClick={() => removeRow(ri)}
                         aria-label={`Remove row ${ri + 1}`}
-                        className="link px-[var(--space-3xs)] text-[length:var(--text-sm)]"
+                        title="Remove row"
+                        className="ghost"
                       >
                         ×
                       </button>
@@ -340,9 +346,12 @@ export default function TableInput({ onChange, onObjectiveSuggested }: TableInpu
               </tbody>
             </table>
           </div>
-          <button type="button" className="btn btn--quiet mt-[var(--space-sm)]" onClick={addRow}>
-            Add row
-          </button>
+          <div className="mt-[var(--space-sm)] flex items-center gap-[var(--space-md)]">
+            <button type="button" className="btn btn--quiet" onClick={addRow}>
+              Add row
+            </button>
+            <p className="text-[length:var(--text-xs)] text-muted">Tab moves across cells. Letters stay on the numbers: 45ab.</p>
+          </div>
         </div>
       )}
     </section>
