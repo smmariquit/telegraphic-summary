@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@sentry/nextjs": "^10.73.0",
-    "next": "16.3.0",
+    "next": "16.3.4",
     "openai": "^6.48.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"
@@ -27,7 +27,7 @@
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
-    "eslint-config-next": "16.3.0",
+    "eslint-config-next": "16.3.4",
     "prettier": "^3.9.6",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "^4",
