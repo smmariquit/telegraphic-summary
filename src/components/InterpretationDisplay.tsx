@@ -1,123 +1,131 @@
 // src/components/InterpretationDisplay.tsx
+//
+// The three stages of the method, Chapter 11 p80-82.
 
 "use client";
 
-import { PatternInsight } from "@/types";
+import type { Prose, TableData, Telegraphic } from "@/types";
+import HighlightedTable from "./HighlightedTable";
 
-interface InterpretationDisplayProps {
-  patterns: PatternInsight[];
-  telegraphicSummary: string;
-  expandedIdea: string;
-  fullInterpretation: string;
-  textSize?: "normal" | "large" | "xlarge";
+interface Props {
+  tableData: TableData;
+  telegraphic: Telegraphic;
+  prose: Prose | null;
+  proseLoading: boolean;
+  proseError: string | null;
+  onRetry: () => void;
 }
 
-const PATTERN_TYPE_STYLES = {
-  trend: { bg: "bg-blue-100", text: "text-blue-700", label: "Trend" },
-  comparison: { bg: "bg-green-100", text: "text-green-700", label: "Comparison" },
-  outlier: { bg: "bg-red-100", text: "text-red-700", label: "Outlier" },
-  correlation: { bg: "bg-purple-100", text: "text-purple-700", label: "Correlation" },
-  grouping: { bg: "bg-amber-100", text: "text-amber-700", label: "Grouping" },
-  other: { bg: "bg-gray-100", text: "text-gray-700", label: "Other" },
-};
-
-export default function InterpretationDisplay({
-  patterns,
-  telegraphicSummary,
-  expandedIdea,
-  fullInterpretation,
-  textSize = "normal",
-}: InterpretationDisplayProps) {
-  // Text size classes
-  const textClasses = {
-    normal: { body: "text-base", heading: "text-lg", small: "text-sm", mono: "text-lg" },
-    large: { body: "text-lg", heading: "text-xl", small: "text-base", mono: "text-xl" },
-    xlarge: { body: "text-xl", heading: "text-2xl", small: "text-lg", mono: "text-2xl" },
-  };
-  const t = textClasses[textSize];
+export default function InterpretationDisplay({ tableData, telegraphic, prose, proseLoading, proseError, onRetry }: Props) {
+  const { rows, groups, highlightedCells, notes } = telegraphic;
+  const collapsed = groups.length < rows.length;
 
   return (
-    <div className="space-y-6">
-      {/* Identified Patterns */}
-      <section className="bg-white rounded-lg shadow-md p-4 md:p-6" aria-labelledby="patterns-heading">
-        <h3 id="patterns-heading" className={`${t.heading} font-semibold text-gray-800 mb-4 flex items-center gap-2`}>
-          <span className="w-8 h-8 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center text-sm font-bold" aria-hidden="true">
-            1
-          </span>
-          Identified Patterns
-        </h3>
-        <p className={`${t.small} text-gray-600 mb-4`}>
-          Key patterns and relationships discovered in your data.
-        </p>
-        
-        <div className="space-y-3">
-          {patterns.map((pattern, index) => {
-            const style = PATTERN_TYPE_STYLES[pattern.type] || PATTERN_TYPE_STYLES.other;
-            return (
-              <article key={index} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
-                  <div className="flex-1">
-                    <div className="flex flex-wrap items-center gap-2 mb-2">
-                      <span className={`font-medium text-gray-800 ${t.body}`}>{pattern.parameter}</span>
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${style.bg} ${style.text}`}>
-                        {style.label}
-                      </span>
-                    </div>
-                    <p className={`font-mono ${t.mono} text-gray-900 mb-1 break-words`}>{pattern.pattern}</p>
-                    <p className={`${t.small} text-gray-600`}>{pattern.insight}</p>
-                  </div>
+    <div className="rise space-y-[var(--space-2xl)]">
+      {/* 1.0 */}
+      <section className="stage" aria-labelledby="s1">
+        <div className="grid gap-[var(--space-sm)] sm:grid-cols-[minmax(0,5rem)_minmax(0,1fr)]">
+          <p className="stage__num" aria-hidden="true">
+            1.0
+          </p>
+          <div className="min-w-0">
+            <h2 id="s1" className="text-[length:var(--text-xl)]">
+              Summarize each row
+            </h2>
+            <p className="mt-[var(--space-2xs)] max-w-[var(--measure)] text-muted">
+              Treatments that share a letter are written as equal. Treatments that share none are ordered by value.
+              The comparison comes from the letters, not from the numbers.
+            </p>
+            <div className="mt-[var(--space-md)]">
+              <HighlightedTable tableData={tableData} rows={rows} highlightedCells={highlightedCells} />
+            </div>
+            {notes.length > 0 && (
+              <ul className="mt-[var(--space-md)] max-w-[var(--measure)] space-y-[var(--space-2xs)] border-l-2 border-accent pl-[var(--space-sm)] text-[length:var(--text-sm)]">
+                {notes.map((n) => (
+                  <li key={n}>{n}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* 2.0 */}
+      <section className="stage" aria-labelledby="s2">
+        <div className="grid gap-[var(--space-sm)] sm:grid-cols-[minmax(0,5rem)_minmax(0,1fr)]">
+          <p className="stage__num" aria-hidden="true">
+            2.0
+          </p>
+          <div className="min-w-0">
+            <h2 id="s2" className="text-[length:var(--text-xl)]">
+              Group the rows
+            </h2>
+            <p className="mt-[var(--space-2xs)] max-w-[var(--measure)] text-muted">
+              {collapsed
+                ? "Rows with the same line collapse into one. This is the telegraphic summary."
+                : "Every row has its own line, so nothing collapses. This is the telegraphic summary."}
+            </p>
+            <dl className="mt-[var(--space-md)] grid gap-y-[var(--space-xs)] font-mono text-[length:var(--text-sm)] sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-x-[var(--space-lg)]">
+              {groups.map((g) => (
+                <div key={g.pattern} className="contents">
+                  <dt className="text-muted">
+                    {g.parameters.length > 1 ? `{ ${g.parameters.join("; ")} }` : g.parameters[0]}
+                  </dt>
+                  <dd className="min-w-0 [overflow-wrap:anywhere] sm:text-right">{g.pattern}</dd>
                 </div>
-              </article>
-            );
-          })}
+              ))}
+            </dl>
+          </div>
         </div>
       </section>
 
-      {/* Telegraphic Summary */}
-      <section className="bg-[var(--section-telegraphic)] rounded-lg shadow-md p-4 md:p-6 border-l-4 border-blue-500" aria-labelledby="telegraphic-heading">
-        <h3 id="telegraphic-heading" className={`${t.heading} font-semibold text-gray-800 mb-3 flex items-center gap-2`}>
-          <span className="w-8 h-8 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-sm font-bold" aria-hidden="true">
-            2
-          </span>
-          Telegraphic Summary
-        </h3>
-        <p className={`${t.small} text-gray-600 mb-2`}>
-          Dense, abbreviated summary using notation:
-        </p>
-        <div className="bg-white p-4 rounded-lg border border-blue-200">
-          <p className={`font-mono text-gray-800 ${t.body} break-words`}>{telegraphicSummary}</p>
-        </div>
-      </section>
+      {/* 3.0 */}
+      <section className="stage" aria-labelledby="s3" aria-busy={proseLoading}>
+        <div className="grid gap-[var(--space-sm)] sm:grid-cols-[minmax(0,5rem)_minmax(0,1fr)]">
+          <p className="stage__num" aria-hidden="true">
+            3.0
+          </p>
+          <div className="min-w-0 max-w-[var(--measure)]">
+            <h2 id="s3" className="text-[length:var(--text-xl)]">
+              Translate into sentences
+            </h2>
+            <p className="mt-[var(--space-2xs)] text-muted">
+              One sentence per line of the summary, the one that answers the objective first. Then the sentences expanded
+              into a paragraph. A language model writes this part under the book’s rules for Chapter 11 and Chapter 14.
+            </p>
 
-      {/* Expanded Idea */}
-      <section className="bg-[var(--section-expanded)] rounded-lg shadow-md p-4 md:p-6 border-l-4 border-green-500" aria-labelledby="expanded-heading">
-        <h3 id="expanded-heading" className={`${t.heading} font-semibold text-gray-800 mb-3 flex items-center gap-2`}>
-          <span className="w-8 h-8 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-sm font-bold" aria-hidden="true">
-            3
-          </span>
-          Expanded Idea
-        </h3>
-        <p className={`${t.small} text-gray-600 mb-2`}>
-          The telegraphic summary translated into complete sentences:
-        </p>
-        <div className="bg-white p-4 rounded-lg border border-green-200">
-          <p className={`text-gray-800 leading-relaxed ${t.body}`}>{expandedIdea}</p>
-        </div>
-      </section>
+            {proseLoading && (
+              <p role="status" className="mt-[var(--space-md)] text-muted">
+                Writing…
+              </p>
+            )}
 
-      {/* Full Interpretation */}
-      <section className="bg-[var(--section-interpretation)] rounded-lg shadow-md p-4 md:p-6 border-l-4 border-amber-500" aria-labelledby="interpretation-heading">
-        <h3 id="interpretation-heading" className={`${t.heading} font-semibold text-gray-800 mb-3 flex items-center gap-2`}>
-          <span className="w-8 h-8 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center text-sm font-bold" aria-hidden="true">
-            4
-          </span>
-          Full Interpretation
-        </h3>
-        <p className={`${t.small} text-gray-600 mb-2`}>
-          Complete interpretation with implications and context:
-        </p>
-        <div className="bg-white p-4 rounded-lg border border-amber-200">
-          <p className={`text-gray-800 leading-relaxed ${t.body}`}>{fullInterpretation}</p>
+            {proseError && (
+              <div role="alert" className="mt-[var(--space-md)]">
+                <p className="text-error">{proseError}</p>
+                <button type="button" className="btn btn--quiet mt-[var(--space-sm)]" onClick={onRetry}>
+                  Try again
+                </button>
+              </div>
+            )}
+
+            {prose && !proseLoading && (
+              <>
+                <h3 className="mt-[var(--space-lg)] text-[length:var(--text-md)]">Sentences</h3>
+                <ol className="mt-[var(--space-2xs)] list-decimal space-y-[var(--space-2xs)] pl-[var(--space-md)]">
+                  {prose.sentences.map((s, i) => (
+                    <li key={i}>{s}</li>
+                  ))}
+                </ol>
+                <h3 className="mt-[var(--space-lg)] text-[length:var(--text-md)]">Paragraph</h3>
+                <p className="mt-[var(--space-2xs)] leading-[1.65]">{prose.paragraph}</p>
+                <p className="mt-[var(--space-sm)] text-[length:var(--text-sm)] text-muted">
+                  Where you see <span className="font-mono">[cite]</span>, the book expects a citation from the
+                  literature (p82, p84). The model has none and did not invent one. Fill those in yourself.
+                </p>
+              </>
+            )}
+          </div>
         </div>
       </section>
     </div>

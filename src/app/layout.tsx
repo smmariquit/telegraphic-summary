@@ -1,7 +1,7 @@
 // src/app/layout.tsx
 
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,21 +16,24 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  style: ["normal"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Telegraphic Summary Generator",
-  description: "Generate concise telegraphic summaries from tabular data using the telegraphic summary method.",
+  title: "Telegraphic Summary",
+  description:
+    "Interpret a research data table with the telegraphic summary method of Bautista and Bondad (1997): summarize each row, group the rows, then write.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable} antialiased`}>
         {children}
       </body>
     </html>

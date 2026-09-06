@@ -1,0 +1,73 @@
+/* Hallmark · genre: editorial · macrostructure: Narrative Workflow · theme: custom
+ * vibe: "green book paper, mean-separation letters, worksheet"
+ * paper oklch(96% 0.018 140) · accent oklch(46% 0.15 25) oxblood
+ * display Newsreader 500 · body Geist 400 · outlier Geist Mono (notation, colophon)
+ * axes: light / roman-serif / warm
+ * nav: N9 edge-aligned · footer: Ft4 dense colophon · enrichment: none
+ * F4 step knobs: numbering=1.0/2.0/3.0, layout=vertical, connector=thick rule
+ * Hallmark · pre-emit critique: P4 H4 E4 S5 R5 V4
+ */
+
+:root {
+  /* colour, anchored on the pale green paper of the 1997 printing */
+  --color-paper: oklch(96% 0.018 140);
+  --color-paper-2: oklch(93% 0.022 140);
+  --color-paper-3: oklch(89% 0.026 140);
+  --color-rule: oklch(80% 0.022 140);
+  --color-rule-strong: oklch(30% 0.03 140);
+  --color-neutral: oklch(56% 0.02 140);
+  --color-muted: oklch(40% 0.022 140);
+  --color-ink: oklch(20% 0.025 140);
+  --color-accent: oklch(46% 0.15 25);
+  --color-accent-ink: oklch(97% 0.01 25);
+  --color-accent-paper: oklch(91% 0.08 95); /* highlighter band, not the error hue */
+  --color-focus: oklch(50% 0.18 25);
+  --color-error: oklch(46% 0.15 25);
+
+  /* type scale; font families are set on body, where next/font defines its variables */
+  --text-xs: 0.8rem;
+  --text-sm: 0.9rem;
+  --text-base: 1rem;
+  --text-md: 1.25rem;
+  --text-lg: 1.5625rem;
+  --text-xl: 1.9531rem;
+  --text-2xl: 2.4414rem;
+  --text-display: clamp(2.25rem, 3.5vw + 1rem, 3.6rem);
+
+  /* space, 4 pt */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4.5rem;
+  --space-3xl: 7rem;
+
+  /* motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-short: 160ms;
+  --dur-med: 240ms;
+
+  --rule-hair: 1px;
+  --rule-thick: 3px;
+  --radius-input: 2px;
+  --measure: 65ch;
+}
+
+body {
+  --font-display: var(--font-newsreader), "Newsreader", ui-serif, Georgia, serif;
+  --font-body: var(--font-geist-sans), "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), "Geist Mono", ui-monospace, monospace;
+}
+
+/* text-size control, replaces per-component class maps */
+:root[data-size="large"] {
+  font-size: 112.5%;
+}
+:root[data-size="xlarge"] {
+  font-size: 125%;
+}

@@ -1,6 +1,6 @@
 # Telegraphic Summary
 
-Paste a dense data table. Get a short, plain-language readback. Runs as a static Next.js export on Cloudflare Pages; `/api/analyze` is a Pages Function.
+Paste a research data table with mean-separation letters, state the objective, and get the telegraphic summary of Bautista and Bondad (1997, *Technical Writing for Beginners*, Chapter 11) plus a model-written draft of the sentences. Steps 1 and 2 (row lines, grouping) are deterministic and run in the browser. Step 3 (prose) runs in the `/api/analyze` Pages Function. Static Next.js export on Cloudflare Pages.
 
 ## Local
 

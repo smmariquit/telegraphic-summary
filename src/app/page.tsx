@@ -2,353 +2,205 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import TableInput from "@/components/TableInput";
-import HighlightedTable from "@/components/HighlightedTable";
 import InterpretationDisplay from "@/components/InterpretationDisplay";
 import Guide from "@/components/Guide";
-import { TableData, AnalysisResult } from "@/types";
+import { telegraphic as summarize } from "@/lib/telegraphic";
+import type { Prose, TableData, Telegraphic } from "@/types";
 
 type TextSize = "normal" | "large" | "xlarge";
-type ActiveTab = "tool" | "guide";
+type Tab = "tool" | "guide";
 
 export default function Home() {
-  const [tableData, setTableData] = useState<TableData | null>(null);
-  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [context, setContext] = useState("");
+  const [tab, setTab] = useState<Tab>("tool");
   const [textSize, setTextSize] = useState<TextSize>("normal");
-  const [activeTab, setActiveTab] = useState<ActiveTab>("tool");
+  const [objective, setObjective] = useState("");
+  const [objectiveMissing, setObjectiveMissing] = useState(false);
+  const [tableData, setTableData] = useState<TableData | null>(null);
+  const [telegraphic, setTelegraphic] = useState<Telegraphic | null>(null);
+  const [prose, setProse] = useState<Prose | null>(null);
+  const [proseLoading, setProseLoading] = useState(false);
+  const [proseError, setProseError] = useState<string | null>(null);
+  const objectiveRef = useRef<HTMLTextAreaElement>(null);
 
-  // Load text size preference from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem("textSize");
-    if (saved && (saved === "normal" || saved === "large" || saved === "xlarge")) {
-      setTextSize(saved as TextSize);
+    try {
+      const saved = localStorage.getItem("textSize");
+      if (saved === "normal" || saved === "large" || saved === "xlarge") setTextSize(saved);
+    } catch {
+      // storage unavailable, keep default
     }
   }, []);
 
-  // Save text size preference
-  const handleTextSizeChange = (size: TextSize) => {
-    setTextSize(size);
-    localStorage.setItem("textSize", size);
-  };
-
-  // Text size classes
-  const textClasses = {
-    normal: {
-      body: "text-base",
-      heading: "text-2xl md:text-4xl",
-      subheading: "text-xl md:text-2xl",
-      small: "text-sm",
-      label: "text-sm",
-    },
-    large: {
-      body: "text-lg",
-      heading: "text-3xl md:text-5xl",
-      subheading: "text-2xl md:text-3xl",
-      small: "text-base",
-      label: "text-base",
-    },
-    xlarge: {
-      body: "text-xl",
-      heading: "text-4xl md:text-6xl",
-      subheading: "text-3xl md:text-4xl",
-      small: "text-lg",
-      label: "text-lg",
-    },
-  };
-
-  const t = textClasses[textSize];
-
-  const handleTableSubmit = async (data: TableData) => {
-    setTableData(data);
-    setIsLoading(true);
-    setError(null);
-    setAnalysisResult(null);
-
+  useEffect(() => {
+    document.documentElement.dataset.size = textSize;
     try {
-      const response = await fetch("/api/analyze", {
+      localStorage.setItem("textSize", textSize);
+    } catch {
+      // storage unavailable
+    }
+  }, [textSize]);
+
+  const writeProse = async (data: TableData, t: Telegraphic) => {
+    setProseLoading(true);
+    setProseError(null);
+    try {
+      const res = await fetch("/api/analyze", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ tableData: data, context }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tableData: data, objective, summary: t.summary, notes: t.notes }),
       });
-
-      if (!response.ok) {
-        throw new Error("Analysis failed");
+      if (!res.ok) {
+        const body = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(body.error || "Could not reach the writing service. Steps 1 and 2 above stand on their own.");
       }
-
-      const result: AnalysisResult = await response.json();
-      setAnalysisResult(result);
+      setProse((await res.json()) as Prose);
     } catch (err) {
-      setError(
-        "Failed to analyze the table. Please check your API key and try again."
-      );
-      console.error(err);
+      setProseError(err instanceof Error ? err.message : "Could not reach the writing service.");
     } finally {
-      setIsLoading(false);
+      setProseLoading(false);
     }
   };
 
-  const handleReset = () => {
+  const handleSubmit = (data: TableData) => {
+    if (!objective.trim()) {
+      setObjectiveMissing(true);
+      objectiveRef.current?.focus();
+      return;
+    }
+    setObjectiveMissing(false);
+    const t = summarize(data);
+    setTableData(data);
+    setTelegraphic(t);
+    setProse(null);
+    void writeProse(data, t);
+  };
+
+  const reset = () => {
     setTableData(null);
-    setAnalysisResult(null);
-    setError(null);
+    setTelegraphic(null);
+    setProse(null);
+    setProseError(null);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Skip to main content link - accessibility */}
+    <div className="min-h-screen bg-paper text-ink">
       <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:outline-none"
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-[var(--space-sm)] focus:top-[var(--space-sm)] focus:z-10 focus:bg-ink focus:px-[var(--space-sm)] focus:py-[var(--space-2xs)] focus:text-paper"
       >
-        Skip to main content
+        Skip to content
       </a>
 
-      {/* Header */}
-      <header className="bg-[var(--brand-header)] text-white py-6 md:py-12">
-        <div className="max-w-5xl mx-auto px-4 md:px-6">
-          {/* Text Size Controls */}
-          <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-            <div 
-              className="flex items-center gap-2 bg-white/10 rounded-lg p-2"
-              role="group"
-              aria-label="Text size controls"
-            >
-              <span className={`${t.small} text-white/80 hidden sm:inline`}>Text Size:</span>
+      {/* N9 edge-aligned: wordmark hard left, controls hard right */}
+      <header className="mx-auto flex max-w-6xl flex-wrap items-baseline justify-between gap-x-[var(--space-lg)] gap-y-[var(--space-2xs)] px-[clamp(1rem,4vw,2rem)] pt-[var(--space-md)]">
+        <button type="button" onClick={() => setTab("tool")} className="font-display text-[length:var(--text-md)]">
+          Telegraphic Summary
+        </button>
+        <nav aria-label="Sections" className="flex items-baseline gap-[var(--space-md)] text-[length:var(--text-sm)]">
+          <button type="button" className="link" aria-current={tab === "tool" ? "page" : undefined} onClick={() => setTab("tool")}>
+            Worksheet
+          </button>
+          <button type="button" className="link" aria-current={tab === "guide" ? "page" : undefined} onClick={() => setTab("guide")}>
+            Guide
+          </button>
+          <div role="group" aria-label="Text size" className="ml-[var(--space-sm)] flex items-baseline gap-[var(--space-2xs)]">
+            {(["normal", "large", "xlarge"] as TextSize[]).map((s, i) => (
               <button
-                onClick={() => handleTextSizeChange("normal")}
-                className={`px-3 py-1 rounded font-medium transition-colors ${
-                  textSize === "normal"
-                    ? "bg-white text-blue-700"
-                    : "text-white hover:bg-white/20"
-                }`}
-                aria-pressed={textSize === "normal"}
-                aria-label="Normal text size"
+                key={s}
+                type="button"
+                onClick={() => setTextSize(s)}
+                aria-pressed={textSize === s}
+                aria-label={`${s === "normal" ? "Normal" : s === "large" ? "Large" : "Extra large"} text`}
+                className={`link font-display ${i === 1 ? "text-[length:var(--text-md)]" : i === 2 ? "text-[length:var(--text-lg)]" : ""}`}
               >
                 A
               </button>
-              <button
-                onClick={() => handleTextSizeChange("large")}
-                className={`px-3 py-1 rounded font-medium text-lg transition-colors ${
-                  textSize === "large"
-                    ? "bg-white text-blue-700"
-                    : "text-white hover:bg-white/20"
-                }`}
-                aria-pressed={textSize === "large"}
-                aria-label="Large text size"
-              >
-                A
-              </button>
-              <button
-                onClick={() => handleTextSizeChange("xlarge")}
-                className={`px-3 py-1 rounded font-medium text-xl transition-colors ${
-                  textSize === "xlarge"
-                    ? "bg-white text-blue-700"
-                    : "text-white hover:bg-white/20"
-                }`}
-                aria-pressed={textSize === "xlarge"}
-                aria-label="Extra large text size"
-              >
-                A
-              </button>
-            </div>
+            ))}
           </div>
-
-          <h1 className={`${t.heading} font-bold mb-3`}>Telegraphic Summary Tool</h1>
-          <p className={`${t.body} text-blue-100 max-w-2xl`}>
-            Transform your research data tables into insightful interpretations 
-            using the telegraphic summary method from technical writing.
-          </p>
-
-          {/* Tab Navigation */}
-          <nav className="mt-6" role="tablist" aria-label="Main navigation">
-            <div className="flex gap-2">
-              <button
-                role="tab"
-                aria-selected={activeTab === "tool"}
-                aria-controls="tool-panel"
-                id="tool-tab"
-                onClick={() => setActiveTab("tool")}
-                className={`px-4 md:px-6 py-2 md:py-3 ${t.body} font-medium rounded-t-lg transition-colors ${
-                  activeTab === "tool"
-                    ? "bg-gray-50 text-blue-700"
-                    : "bg-white/20 text-white hover:bg-white/30"
-                }`}
-              >
-                📊 Analysis Tool
-              </button>
-              <button
-                role="tab"
-                aria-selected={activeTab === "guide"}
-                aria-controls="guide-panel"
-                id="guide-tab"
-                onClick={() => setActiveTab("guide")}
-                className={`px-4 md:px-6 py-2 md:py-3 ${t.body} font-medium rounded-t-lg transition-colors ${
-                  activeTab === "guide"
-                    ? "bg-gray-50 text-blue-700"
-                    : "bg-white/20 text-white hover:bg-white/30"
-                }`}
-              >
-                📖 Guide
-              </button>
-            </div>
-          </nav>
-        </div>
+        </nav>
       </header>
 
-      <main id="main-content" className="max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-8">
-        {/* Tool Panel */}
-        {activeTab === "tool" && (
-          <div
-            role="tabpanel"
-            id="tool-panel"
-            aria-labelledby="tool-tab"
-          >
-            {/* Context Input */}
-            {!analysisResult && (
-              <div className="mb-6">
-                <label 
-                  htmlFor="context-input"
-                  className={`block ${t.label} font-medium text-gray-700 mb-2`}
-                >
-                  Research Context (Optional)
-                </label>
-                <textarea
-                  id="context-input"
-                  value={context}
-                  onChange={(e) => setContext(e.target.value)}
-                  placeholder="Describe your experiment objectives, e.g., 'Comparing fertilizer formulations A, B, C, D on cucumber growth and yield to find a cost-effective alternative to A'"
-                  className={`w-full p-3 border rounded-lg ${t.body} text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
-                  rows={2}
-                />
+      <main id="main" className="mx-auto max-w-6xl px-[clamp(1rem,4vw,2rem)] pb-[var(--space-3xl)] pt-[var(--space-2xl)]">
+        {tab === "guide" ? (
+          <Guide />
+        ) : !tableData || !telegraphic ? (
+          <>
+            <h1 className="max-w-[24ch] text-[length:var(--text-display)]">Read the table before you write about it.</h1>
+            <p className="mt-[var(--space-md)] max-w-[var(--measure)] text-[length:var(--text-md)] text-muted">
+              Summarize each row from its mean-separation letters, collapse rows that agree, then turn the lines into
+              sentences. The method of Bautista and Bondad, <cite>Technical Writing for Beginners</cite>, 1997, Chapter
+              11.
+            </p>
+
+            <section aria-labelledby="objective-heading" className="mt-[var(--space-2xl)]">
+              <h2 id="objective-heading" className="text-[length:var(--text-lg)]">
+                The objective
+              </h2>
+              <p className="mt-[var(--space-2xs)] max-w-[var(--measure)] text-muted">
+                “The discussion should answer the objectives. All others are secondary.” Page 80. Required.
+              </p>
+              <textarea
+                ref={objectiveRef}
+                id="objective"
+                value={objective}
+                onChange={(e) => {
+                  setObjective(e.target.value);
+                  if (e.target.value.trim()) setObjectiveMissing(false);
+                }}
+                rows={2}
+                required
+                aria-required="true"
+                aria-invalid={objectiveMissing}
+                aria-describedby={objectiveMissing ? "objective-error" : undefined}
+                placeholder="Look for a substitute for the costlier standard fertilizer A."
+                className="field mt-[var(--space-sm)] max-w-[var(--measure)]"
+              />
+              {objectiveMissing && (
+                <p id="objective-error" role="alert" className="mt-[var(--space-2xs)] text-[length:var(--text-sm)] text-error">
+                  Write the objective first. The method cannot decide what to say first without it.
+                </p>
+              )}
+            </section>
+
+            <TableInput onTableSubmit={handleSubmit} onObjectiveSuggested={(o) => setObjective((cur) => cur.trim() ? cur : o)} />
+          </>
+        ) : (
+          <>
+            <div className="flex flex-wrap items-baseline justify-between gap-[var(--space-sm)]">
+              <div className="max-w-[var(--measure)]">
+                <p className="text-[length:var(--text-sm)] text-muted">Objective</p>
+                <h1 className="text-[length:var(--text-lg)]">{objective}</h1>
               </div>
-            )}
-
-            {/* Main Content */}
-            {!tableData ? (
-              <>
-                <TableInput onTableSubmit={handleTableSubmit} textSize={textSize} />
-
-                {/* Instructions */}
-                <div className="mt-8 bg-blue-50 rounded-lg p-4 md:p-6 border border-blue-100">
-                  <h2 className={`font-semibold text-blue-900 mb-3 ${t.subheading}`}>
-                    📚 What is a Telegraphic Summary?
-                  </h2>
-                  <p className={`text-blue-800 ${t.body} mb-4`}>
-                    A telegraphic summary is a research technique for condensing data 
-                    into abbreviated patterns and insights, then systematically expanding 
-                    them into meaningful interpretations. It helps researchers identify 
-                    trends, correlations, outliers, and relationships in their data.
-                  </p>
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <div className="bg-white p-4 rounded-lg border border-blue-200">
-                      <h3 className={`font-medium text-blue-900 mb-2 ${t.body}`}>Step 1: Identify Patterns</h3>
-                      <p className={`text-blue-700 ${t.small}`}>
-                        Find meaningful patterns: trends, comparisons, correlations, 
-                        outliers, or groupings in your data
-                      </p>
-                    </div>
-                    <div className="bg-white p-4 rounded-lg border border-blue-200">
-                      <h3 className={`font-medium text-blue-900 mb-2 ${t.body}`}>Step 2: Synthesize</h3>
-                      <p className={`text-blue-700 ${t.small}`}>
-                        Combine related patterns to find the main story your data tells
-                      </p>
-                    </div>
-                    <div className="bg-white p-4 rounded-lg border border-blue-200">
-                      <h3 className={`font-medium text-blue-900 mb-2 ${t.body}`}>Step 3: Interpret</h3>
-                      <p className={`text-blue-700 ${t.small}`}>
-                        Expand into sentences that explain what the data means, not just 
-                        what it shows
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="space-y-6 md:space-y-8">
-                {/* Action Bar */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                  <h2 className={`${t.subheading} font-bold text-gray-800`}>Analysis Results</h2>
-                  <button
-                    onClick={handleReset}
-                    className={`px-4 py-2 ${t.body} text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors`}
-                  >
-                    ← New Analysis
-                  </button>
-                </div>
-
-                {/* Loading State */}
-                {isLoading && (
-                  <div className="bg-white rounded-lg shadow-md p-8 md:p-12 text-center" role="status" aria-live="polite">
-                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mb-4" aria-hidden="true"></div>
-                    <p className={`text-gray-600 ${t.body}`}>
-                      Analyzing your data with AI...
-                    </p>
-                    <p className={`${t.small} text-gray-400 mt-2`}>
-                      Identifying patterns and generating interpretations
-                    </p>
-                  </div>
-                )}
-
-                {/* Error State */}
-                {error && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-6" role="alert">
-                    <p className={`text-red-800 font-medium ${t.body}`}>⚠️ {error}</p>
-                    <button
-                      onClick={() => tableData && handleTableSubmit(tableData)}
-                      className={`mt-3 px-4 py-2 ${t.body} bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors`}
-                    >
-                      Try Again
-                    </button>
-                  </div>
-                )}
-
-                {/* Results */}
-                {analysisResult && (
-                  <>
-                    <HighlightedTable
-                      tableData={tableData}
-                      highlightedCells={analysisResult.highlightedCells}
-                      textSize={textSize}
-                    />
-                    <InterpretationDisplay
-                      patterns={analysisResult.patterns}
-                      telegraphicSummary={analysisResult.telegraphicSummary}
-                      expandedIdea={analysisResult.expandedIdea}
-                      fullInterpretation={analysisResult.fullInterpretation}
-                      textSize={textSize}
-                    />
-                  </>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Guide Panel */}
-        {activeTab === "guide" && (
-          <div
-            role="tabpanel"
-            id="guide-panel"
-            aria-labelledby="guide-tab"
-          >
-            <Guide textSize={textSize} />
-          </div>
+              <button type="button" className="btn btn--quiet" onClick={reset}>
+                New table
+              </button>
+            </div>
+            <div className="mt-[var(--space-xl)]">
+              <InterpretationDisplay
+                tableData={tableData}
+                telegraphic={telegraphic}
+                prose={prose}
+                proseLoading={proseLoading}
+                proseError={proseError}
+                onRetry={() => void writeProse(tableData, telegraphic)}
+              />
+            </div>
+          </>
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="mt-12 py-6 bg-gray-100 border-t">
-        <div className={`max-w-5xl mx-auto px-4 md:px-6 text-center ${t.small} text-gray-500`}>
-          <p>
-            Based on the telegraphic summary method from technical writing for research.
-          </p>
-        </div>
+      {/* Ft4 dense colophon */}
+      <footer className="border-t border-rule">
+        <p className="mx-auto max-w-6xl px-[clamp(1rem,4vw,2rem)] py-[var(--space-lg)] font-mono text-[length:var(--text-xs)] leading-[1.7] text-muted">
+          Method: Bautista, O.K., and N.D. Bondad. 1997. Technical writing for beginners. ECRC and Associates, Los
+          Baños, Laguna. ISBN 971-91902-0-5. Ch. 11, Interpreting data, pp. 80–85; Ch. 14, Language usage, pp.
+          106–113. Revised 2012 as Bautista, Rosario, and Bautista Jr., Technical writing for publication in journals
+          and for presentation, UPLB/UPLBFI, ISBN 978-971-547-303-3. Steps 1 and 2 computed locally from the
+          mean-separation letters. Step 3 written by a language model under the book’s rules. Sample tables: Table 5 of
+          the book and four practice tables supplied with it.
+        </p>
       </footer>
     </div>
   );

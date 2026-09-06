@@ -2,255 +2,117 @@
 
 "use client";
 
-interface GuideProps {
-  textSize: "normal" | "large" | "xlarge";
-}
-
-export default function Guide({ textSize }: GuideProps) {
-  const textClasses = {
-    normal: {
-      body: "text-base",
-      heading: "text-xl",
-      subheading: "text-lg",
-      small: "text-sm",
-    },
-    large: {
-      body: "text-lg",
-      heading: "text-2xl",
-      subheading: "text-xl",
-      small: "text-base",
-    },
-    xlarge: {
-      body: "text-xl",
-      heading: "text-3xl",
-      subheading: "text-2xl",
-      small: "text-lg",
-    },
-  };
-
-  const t = textClasses[textSize];
-
+export default function Guide() {
   return (
-    <div className="space-y-8">
-      {/* Introduction */}
-      <section aria-labelledby="intro-heading" className="bg-white rounded-lg shadow-md p-6 md:p-8">
-        <h2 id="intro-heading" className={`${t.heading} font-bold text-gray-900 mb-4`}>
-          📖 What is this tool?
+    <article className="max-w-[var(--measure)] space-y-[var(--space-xl)] leading-[1.65]">
+      <section aria-labelledby="g-what">
+        <h2 id="g-what" className="text-[length:var(--text-xl)]">
+          What a telegraphic summary is
         </h2>
-        <p className={`${t.body} text-gray-700 leading-relaxed mb-4`}>
-          This tool helps you <strong>understand your research data</strong> by finding 
-          patterns and turning them into clear, written explanations. Instead of just 
-          looking at numbers in a table, you get a story that explains what the data means.
+        <p className="mt-[var(--space-sm)]">
+          The term comes from Chapter 11, “Interpreting Data”, of <cite>Technical Writing for Beginners</cite> by
+          Ofelia K. Bautista and Nestor D. Bondad (1997). Before writing the results of an experiment, the researcher
+          writes each row of a table as a short comparison of treatments, then collapses rows that say the same thing,
+          then turns the collapsed lines into sentences. The book’s own procedure, page 80:
         </p>
-        <p className={`${t.body} text-gray-700 leading-relaxed`}>
-          It uses a method called <strong>&quot;Telegraphic Summary&quot;</strong> — a technique 
-          used in research writing where you first summarize data in a short, abbreviated 
-          form (like notes), then expand it into full sentences.
+        <blockquote className="mt-[var(--space-sm)] border-l-2 border-rule-strong pl-[var(--space-sm)] text-muted">
+          One approach that could be useful is to 1) summarize the results that the table or figures show, 2) list down
+          what are the information that can be synthesized, and 3) then decide which idea to present first.
+        </blockquote>
+      </section>
+
+      <section aria-labelledby="g-example">
+        <h2 id="g-example" className="text-[length:var(--text-xl)]">
+          The book’s example
+        </h2>
+        <p className="mt-[var(--space-sm)]">
+          Table 5 compares fertilizer formulations A, B, C, and D on cucumber. The objective was a substitute for the
+          costly standard, A. Each row becomes one line:
+        </p>
+        <pre className="mt-[var(--space-sm)] overflow-x-auto font-mono text-[length:var(--text-sm)]">
+{`Plant height          A=B=C=D or NS
+No. of branches       A=B=C=D or NS
+Shoot dry weight      A=B>C=D
+Root dry weight       A=B=C=D or NS
+Total weight of fruits A=B>C=D
+Mean weight of fruits  A=B>C=D`}
+        </pre>
+        <p className="mt-[var(--space-sm)]">Then the lines collapse (page 82):</p>
+        <pre className="mt-[var(--space-sm)] overflow-x-auto font-mono text-[length:var(--text-sm)]">
+{`{ height, branches, root dry wt, shoot root ratio, shoot dry wt }  A=B=C=D
+{ total wt of fruits, no. of fruits, mean wt of fruits }           A=B>[C=D]`}
+        </pre>
+        <p className="mt-[var(--space-sm)]">
+          And the two collapsed lines become two sentences: “Fertilizer B proved to be a good substitute for A since
+          the growth and yield of plants fertilized with A and B were almost equal,” and “While plants fertilized with
+          C and D did not differ visually from A or B, as shown by similar height and number of branches, the C and D
+          plants had lower yield due to lower fruit weight and number.” Each sentence is then expanded into a paragraph
+          with explanations and literature.
         </p>
       </section>
 
-      {/* How to Use */}
-      <section aria-labelledby="howto-heading" className="bg-white rounded-lg shadow-md p-6 md:p-8">
-        <h2 id="howto-heading" className={`${t.heading} font-bold text-gray-900 mb-4`}>
-          🔧 How to Use This Tool
+      <section aria-labelledby="g-tool">
+        <h2 id="g-tool" className="text-[length:var(--text-xl)]">
+          What this tool does, and what it leaves to you
         </h2>
-        <ol className={`${t.body} text-gray-700 space-y-4 list-decimal list-inside`}>
-          <li>
-            <strong>Enter your data table</strong> — You can type it manually, paste from 
-            a spreadsheet, or try one of the sample datasets provided.
-          </li>
-          <li>
-            <strong>Add context (optional)</strong> — Tell the tool what your experiment 
-            was about. This helps it give better interpretations.
-          </li>
-          <li>
-            <strong>Click &quot;Analyze Table&quot;</strong> — The tool will find patterns in 
-            your data and highlight important values.
-          </li>
-          <li>
-            <strong>Read the results</strong> — You&apos;ll see highlighted data, identified 
-            patterns, and three levels of interpretation (from brief to detailed).
-          </li>
-        </ol>
-      </section>
-
-      {/* Types of Patterns */}
-      <section aria-labelledby="patterns-heading" className="bg-white rounded-lg shadow-md p-6 md:p-8">
-        <h2 id="patterns-heading" className={`${t.heading} font-bold text-gray-900 mb-6`}>
-          🔍 Types of Patterns the Tool Can Find
-        </h2>
-        <p className={`${t.body} text-gray-700 mb-6`}>
-          The tool looks for these kinds of interesting things in your data:
+        <p className="mt-[var(--space-sm)]">
+          Steps 1 and 2 are arithmetic on the mean-separation letters, so the tool does them without a language model.
+          Treatments that share a letter are written as equal. Treatments that share none are ordered by value. Rows with
+          the same line collapse into one group. The best statistical group of each row that differs is marked in the
+          table.
         </p>
-
-        <div className="space-y-6">
-          {/* Comparison */}
-          <div className="border-l-4 border-green-500 pl-4 py-2">
-            <h3 className={`${t.subheading} font-semibold text-green-800 mb-2 flex items-center gap-2`}>
-              <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-sm">Comparison</span>
-            </h3>
-            <p className={`${t.body} text-gray-700 mb-2`}>
-              <strong>What it means:</strong> Some groups are different from others.
-            </p>
-            <p className={`${t.small} text-gray-600 italic`}>
-              Example: &quot;Treatment A and B produced similar yields, but both were 
-              much higher than Treatment C and D.&quot;
-            </p>
-            <p className={`${t.small} text-gray-500 mt-2`}>
-              Often written as: A = B &gt; C = D (where = means &quot;similar&quot; and &gt; means &quot;greater than&quot;)
-            </p>
-          </div>
-
-          {/* Trend */}
-          <div className="border-l-4 border-blue-500 pl-4 py-2">
-            <h3 className={`${t.subheading} font-semibold text-blue-800 mb-2 flex items-center gap-2`}>
-              <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm">Trend</span>
-            </h3>
-            <p className={`${t.body} text-gray-700 mb-2`}>
-              <strong>What it means:</strong> Values go up or down in a pattern as something else changes.
-            </p>
-            <p className={`${t.small} text-gray-600 italic`}>
-              Example: &quot;As the dosage increased, the patient&apos;s blood pressure decreased steadily.&quot;
-            </p>
-          </div>
-
-          {/* Correlation */}
-          <div className="border-l-4 border-purple-500 pl-4 py-2">
-            <h3 className={`${t.subheading} font-semibold text-purple-800 mb-2 flex items-center gap-2`}>
-              <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded text-sm">Correlation</span>
-            </h3>
-            <p className={`${t.body} text-gray-700 mb-2`}>
-              <strong>What it means:</strong> Two things seem to be connected — when one goes up, 
-              the other goes up (or down).
-            </p>
-            <p className={`${t.small} text-gray-600 italic`}>
-              Example: &quot;Plants with more leaves also had heavier fruits — they seem to be related.&quot;
-            </p>
-          </div>
-
-          {/* Grouping */}
-          <div className="border-l-4 border-amber-500 pl-4 py-2">
-            <h3 className={`${t.subheading} font-semibold text-amber-800 mb-2 flex items-center gap-2`}>
-              <span className="bg-amber-100 text-amber-700 px-2 py-1 rounded text-sm">Grouping</span>
-            </h3>
-            <p className={`${t.body} text-gray-700 mb-2`}>
-              <strong>What it means:</strong> Some things naturally belong together based on their values.
-            </p>
-            <p className={`${t.small} text-gray-600 italic`}>
-              Example: &quot;The growth measurements (height, branches, weight) all showed similar 
-              patterns, while the yield measurements behaved differently.&quot;
-            </p>
-          </div>
-
-          {/* Outlier */}
-          <div className="border-l-4 border-red-500 pl-4 py-2">
-            <h3 className={`${t.subheading} font-semibold text-red-800 mb-2 flex items-center gap-2`}>
-              <span className="bg-red-100 text-red-700 px-2 py-1 rounded text-sm">Outlier</span>
-            </h3>
-            <p className={`${t.body} text-gray-700 mb-2`}>
-              <strong>What it means:</strong> Something unusual that doesn&apos;t fit the pattern.
-            </p>
-            <p className={`${t.small} text-gray-600 italic`}>
-              Example: &quot;While most antibiotics worked against the bacteria, Penicillin 
-              had no effect at all — this is unexpected.&quot;
-            </p>
-          </div>
-
-          {/* Other */}
-          <div className="border-l-4 border-gray-500 pl-4 py-2">
-            <h3 className={`${t.subheading} font-semibold text-gray-800 mb-2 flex items-center gap-2`}>
-              <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm">Other</span>
-            </h3>
-            <p className={`${t.body} text-gray-700 mb-2`}>
-              <strong>What it means:</strong> Any other interesting observation that doesn&apos;t fit 
-              the categories above.
-            </p>
-            <p className={`${t.small} text-gray-600 italic`}>
-              Example: &quot;The online teaching method had the lowest completion rate, 
-              which might affect the validity of its test scores.&quot;
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Understanding Results */}
-      <section aria-labelledby="results-heading" className="bg-white rounded-lg shadow-md p-6 md:p-8">
-        <h2 id="results-heading" className={`${t.heading} font-bold text-gray-900 mb-6`}>
-          📊 Understanding Your Results
-        </h2>
-        
-        <div className="space-y-6">
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className={`${t.subheading} font-semibold text-gray-800 mb-2`}>
-              1. Highlighted Table
-            </h3>
-            <p className={`${t.body} text-gray-700`}>
-              Your data table with important cells colored:
-            </p>
-            <ul className={`${t.small} text-gray-600 mt-2 space-y-1 ml-4`}>
-              <li>🟢 <strong>Green</strong> = Highest or best values</li>
-              <li>🔴 <strong>Red</strong> = Lowest values</li>
-              <li>🟡 <strong>Yellow</strong> = Notable patterns</li>
-              <li>🔵 <strong>Blue</strong> = Key comparisons</li>
-            </ul>
-          </div>
-
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className={`${t.subheading} font-semibold text-gray-800 mb-2`}>
-              2. Identified Patterns
-            </h3>
-            <p className={`${t.body} text-gray-700`}>
-              A list of all the interesting patterns found, with brief explanations 
-              of what makes each one notable.
-            </p>
-          </div>
-
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className={`${t.subheading} font-semibold text-gray-800 mb-2`}>
-              3. Three Levels of Summary
-            </h3>
-            <ul className={`${t.body} text-gray-700 space-y-2 ml-4`}>
-              <li>
-                <strong>Telegraphic Summary</strong> — Very brief, uses abbreviations 
-                (good for your own notes)
-              </li>
-              <li>
-                <strong>Expanded Idea</strong> — The same information written as 
-                complete sentences
-              </li>
-              <li>
-                <strong>Full Interpretation</strong> — A paragraph that explains 
-                what the data means and why it matters
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Tips */}
-      <section aria-labelledby="tips-heading" className="bg-blue-50 rounded-lg p-6 md:p-8 border border-blue-200">
-        <h2 id="tips-heading" className={`${t.heading} font-bold text-blue-900 mb-4`}>
-          💡 Tips for Best Results
-        </h2>
-        <ul className={`${t.body} text-blue-800 space-y-3`}>
+        <p className="mt-[var(--space-sm)]">
+          Step 3 needs prose, so a language model writes the sentences and the paragraph. It is given the objective, the
+          table, and the finished summary, and a fixed set of rules from the book. It does not decide which treatments
+          differ. Where the book expects a citation, it writes <span className="font-mono">[cite]</span> instead of
+          inventing one.
+        </p>
+        <h3 className="mt-[var(--space-lg)] text-[length:var(--text-md)]">Rules the tool enforces</h3>
+        <ul className="mt-[var(--space-2xs)] list-disc space-y-[var(--space-2xs)] pl-[var(--space-md)]">
+          <li>The objective is required. The discussion answers the objective; all else is secondary (p80).</li>
+          <li>State trends and patterns. Do not cite the data one by one (p82).</li>
           <li>
-            ✓ <strong>Add context</strong> — Tell the tool what your experiment was about 
-            for better interpretations.
+            Treatments that share a letter had no effect on each other. A numerical gap without significance is not
+            discussed as a difference (p83).
           </li>
           <li>
-            ✓ <strong>Use clear labels</strong> — Make sure your row and column names 
-            describe what they measure.
+            A row with no significant difference but a consistent trend may have the trend mentioned, with a possible
+            reason for the lack of significance (p83).
           </li>
+          <li>State the effect, not the statistic. “Significant” and “insignificant” used sparingly, if at all (p84).</li>
+          <li>Interpret, do not restate. “Growth increased”, not “height and diameter increased” (p85).</li>
+          <li>Formal, brief, clear language. No “The data shows”. No emotional words. No wordy phrases (Chapter 14).</li>
+        </ul>
+        <h3 className="mt-[var(--space-lg)] text-[length:var(--text-md)]">Cases the book does not settle</h3>
+        <ul className="mt-[var(--space-2xs)] list-disc space-y-[var(--space-2xs)] pl-[var(--space-md)]">
           <li>
-            ✓ <strong>Include units</strong> — Adding units (cm, g, %) in your parameter 
-            names helps the tool understand your data.
+            Letters that overlap (a, ab, b). The tool writes each letter group as one “=” group and joins groups with
+            “≥” when they still share a letter, “&gt;” when they share none. The row is marked with ?. The book uses
+            only “=” and “&gt;”. Confirm the reading with your adviser.
           </li>
+          <li>Tables without letters. The tool can only report a consistent trend, if there is one.</li>
+          <li>Two-factor tables. The tool reads each column as one treatment. Interactions (p84) are up to you.</li>
           <li>
-            ✓ <strong>Review the output</strong> — The AI provides suggestions, but you 
-            know your research best. Use it as a starting point.
+            Columns where a smaller number is the better result, such as a disease rating. Tick “lower is better” for
+            that row so the order is right.
           </li>
         </ul>
       </section>
-    </div>
+
+      <section aria-labelledby="g-source">
+        <h2 id="g-source" className="text-[length:var(--text-xl)]">
+          Source
+        </h2>
+        <p className="mt-[var(--space-sm)]">
+          Bautista, O.K., and N.D. Bondad. 1997. Technical writing for beginners. ECRC and Associates, Los Baños,
+          Laguna. ISBN 971-91902-0-5. Chapter 11, Interpreting data, pages 80 to 85. Chapter 14, Language usage, pages
+          106 to 113.
+        </p>
+        <p className="mt-[var(--space-sm)]">
+          Revised in 2012 as Bautista, O.K., T.L. Rosario, and R.K. Bautista Jr., Technical writing for publication in
+          journals and for presentation, UPLB and UPLBFI, ISBN 978-971-547-303-3, where the method sits in Chapter 17.
+        </p>
+      </section>
+    </article>
   );
 }

@@ -3,26 +3,27 @@
 "use client";
 
 import { useState } from "react";
-import { TableData } from "@/types";
+import type { TableData } from "@/types";
 
 interface TableInputProps {
   onTableSubmit: (data: TableData) => void;
-  textSize?: "normal" | "large" | "xlarge";
+  onObjectiveSuggested: (objective: string) => void;
 }
 
 interface SampleDataset {
   name: string;
-  description: string;
-  context: string;
+  source: string;
+  objective: string;
   data: TableData;
 }
 
-// Contextualized sample datasets
+// Table 5 of the book (p81) plus the four handwritten practice tables that came with the scan.
 const SAMPLE_DATASETS: SampleDataset[] = [
   {
-    name: "Cucumber Fertilizer Trial",
-    description: "Growth and yield of 'Pointsett' cucumber with different fertilizers",
-    context: "Comparing fertilizer formulations A, B, C, D on cucumber growth and yield to find a cost-effective alternative to the standard fertilizer A",
+    name: "Cucumber fertilizer trial",
+    source: "Table 5, p81. Growth and yield of 'Pointsett' cucumber applied with different fertilizers.",
+    objective:
+      "Look for a substitute for the costlier and more-difficult-to-prepare standard fertilizer A among formulations B, C, and D.",
     data: {
       headers: ["A", "B", "C", "D"],
       rows: [
@@ -38,285 +39,295 @@ const SAMPLE_DATASETS: SampleDataset[] = [
     },
   },
   {
-    name: "Antibiotic Efficacy Study",
-    description: "Bacterial inhibition zones (mm) for different antibiotics against pathogens",
-    context: "Testing the effectiveness of four antibiotics against common bacterial pathogens to guide clinical prescription recommendations",
+    name: "Peanut soil additives",
+    source: "Practice table. Seed yield of peanut applied with soil additives, HSD letters.",
+    objective: "Find a soil additive that matches inorganic fertilizer in peanut seed yield.",
     data: {
-      headers: ["Amoxicillin", "Ciprofloxacin", "Tetracycline", "Penicillin"],
+      headers: [
+        "Control",
+        "Inorganic fertilizer",
+        "Vermicompost",
+        "VC + BioGroe",
+        "VC + Formula 4",
+        "VC + Nitroplus",
+        "Farmyard manure",
+        "FM + BioGroe",
+        "FM + Formula 4",
+        "FM + Nitroplus",
+      ],
       rows: [
-        ["E. coli", "15", "28", "12", "8"],
-        ["S. aureus", "22", "25", "18", "24"],
-        ["P. aeruginosa", "0", "30", "6", "0"],
-        ["K. pneumoniae", "12", "26", "10", "5"],
-        ["S. pneumoniae", "28", "20", "22", "30"],
+        ["Seed yield (t/ha)", "0.44d", "0.83ab", "0.76abc", "0.58bcd", "0.62bcd", "0.91a", "0.52cd", "0.68abcd", "0.65bcd", "0.57bcd"],
       ],
     },
   },
   {
-    name: "Student Performance Analysis",
-    description: "Average test scores across teaching methods and subjects",
-    context: "Evaluating the impact of different teaching methods (Traditional, Flipped Classroom, Hybrid, Online) on student performance across subjects",
+    name: "Broiler Acacia pod meal",
+    source: "Practice table. Growth performance of broilers fed diets with levels of Acacia pod meal, 42 days.",
+    objective: "Determine how much Acacia pod meal can replace conventional feed without reducing broiler growth.",
     data: {
-      headers: ["Traditional", "Flipped", "Hybrid", "Online"],
+      headers: ["0", "0.5", "1.0", "2.5", "5.0"],
       rows: [
-        ["Mathematics", "72", "78", "81", "68"],
-        ["Science", "68", "82", "79", "71"],
-        ["English", "75", "74", "77", "76"],
-        ["History", "70", "69", "73", "72"],
-        ["Student Satisfaction (%)", "65", "85", "80", "60"],
-        ["Completion Rate (%)", "92", "88", "90", "75"],
+        ["Body weight (g)", "2120a", "2090", "2062", "2000", "1948"],
+        ["Body weight gain (g)", "1986", "1955", "1927", "1865", "1814"],
+        ["Feed intake (g), NS", "3950", "3930", "4020", "3910", "4000"],
+        ["Feed efficiency, NS", "1.99", "2.01", "2.09", "2.10", "2.21"],
       ],
+    },
+  },
+  {
+    name: "Rice wine yeast",
+    source: "Practice table. Characteristics of rice wine from young (1 mo) and aged (6 mo) rice yeast, warm or cold rice.",
+    objective: "Compare young and aged rice yeast, at warm and cold rice temperature, for rice wine quality.",
+    data: {
+      headers: ["Aged, warm", "Aged, cold", "Young, warm", "Young, cold"],
+      rows: [
+        ["Taste", "1.56a", "2.06a", "2.50a", "3.13b"],
+        ["Appearance", "1.56a", "1.04a", "1.94a", "2.13a"],
+        ["Color", "2.69c", "2.44b", "1.50a", "1.88ab"],
+        ["General acceptability", "1.94a", "2.15b", "1.98a", "2.38b"],
+      ],
+    },
+  },
+  {
+    name: "Mango wash treatments",
+    source: "Practice table. Quality of mango washed with different agents and stored at 12 C for 10 days.",
+    objective: "Find a wash treatment that lowers disease and keeps fruit quality during storage.",
+    data: {
+      headers: ["Unwashed", "Water alone", "0.5% alum", "Detergent solution", "1.5% Chlorox"],
+      rows: [
+        ["Disease rating", "2.16a", "2.12b", "1.63c", "1.25e", "1.46d"],
+        ["Quality rating", "5.20a", "5.01b", "8.05c", "7.21e", "6.92d"],
+      ],
+      lowerIsBetter: [true, false],
     },
   },
 ];
 
-export default function TableInput({ onTableSubmit, textSize = "normal" }: TableInputProps) {
+export default function TableInput({ onTableSubmit, onObjectiveSuggested }: TableInputProps) {
   const [inputMode, setInputMode] = useState<"csv" | "manual">("manual");
   const [csvText, setCsvText] = useState("");
   const [headers, setHeaders] = useState<string[]>(["A", "B", "C", "D"]);
-  const [rows, setRows] = useState<string[][]>([
-    ["", "", "", "", ""],
-  ]);
-  const [numCols, setNumCols] = useState(4);
+  const [rows, setRows] = useState<string[][]>([["", "", "", "", ""]]);
+  const [lowerIsBetter, setLowerIsBetter] = useState<boolean[]>([false]);
   const [selectedSample, setSelectedSample] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  // Text size classes
-  const textClasses = {
-    normal: { body: "text-base", small: "text-sm", input: "text-sm" },
-    large: { body: "text-lg", small: "text-base", input: "text-base" },
-    xlarge: { body: "text-xl", small: "text-lg", input: "text-lg" },
-  };
-  const t = textClasses[textSize];
-
-  const loadSampleData = (index: number) => {
-    const sample = SAMPLE_DATASETS[index];
-    setHeaders(sample.data.headers);
-    setRows(sample.data.rows.map(row => row.map(String)));
-    setNumCols(sample.data.headers.length);
+  const loadSample = (index: number) => {
+    const s = SAMPLE_DATASETS[index];
+    setHeaders([...s.data.headers]);
+    setRows(s.data.rows.map((r) => r.map(String)));
+    setLowerIsBetter(s.data.rows.map((_, i) => s.data.lowerIsBetter?.[i] ?? false));
     setSelectedSample(index);
+    setInputMode("manual");
+    setError(null);
+    onObjectiveSuggested(s.objective);
   };
 
   const parseCSV = (text: string): TableData | null => {
-    const lines = text.trim().split("\n").filter(line => line.trim());
+    const lines = text.trim().split("\n").filter((l) => l.trim());
     if (lines.length < 2) return null;
-
-    const parseRow = (line: string) => {
-      // Handle both comma and tab separation
-      return line.includes("\t") 
-        ? line.split("\t").map(cell => cell.trim())
-        : line.split(",").map(cell => cell.trim());
-    };
-
-    const headerRow = parseRow(lines[0]);
-    // First column might be "Parameter" or similar, rest are treatment headers
-    const headers = headerRow.slice(1);
-    
-    const rows = lines.slice(1).map(line => parseRow(line));
-
-    return { headers, rows };
+    const split = (line: string) => (line.includes("\t") ? line.split("\t") : line.split(",")).map((c) => c.trim());
+    const head = split(lines[0]);
+    return { headers: head.slice(1), rows: lines.slice(1).map(split) };
   };
 
-  const handleCSVSubmit = () => {
+  const submitCSV = () => {
     const parsed = parseCSV(csvText);
-    if (parsed) {
-      onTableSubmit(parsed);
-    } else {
-      alert("Could not parse CSV. Please check the format.");
-    }
-  };
-
-  const handleManualSubmit = () => {
-    // Filter out empty rows
-    const filteredRows = rows.filter(row => 
-      row.some(cell => cell.trim() !== "")
-    );
-    
-    if (filteredRows.length === 0) {
-      alert("Please enter some data");
+    if (!parsed) {
+      setError("Need a header row and at least one data row, separated by commas or tabs.");
       return;
     }
-
-    onTableSubmit({ headers, rows: filteredRows });
+    setError(null);
+    onTableSubmit(parsed);
   };
 
-  const updateHeader = (index: number, value: string) => {
-    const newHeaders = [...headers];
-    newHeaders[index] = value;
-    setHeaders(newHeaders);
+  const submitManual = () => {
+    const kept = rows.map((r, i) => ({ r, i })).filter(({ r }) => r.some((c) => c.trim() !== ""));
+    if (kept.length === 0) {
+      setError("Enter at least one row of data.");
+      return;
+    }
+    setError(null);
+    onTableSubmit({
+      headers,
+      rows: kept.map(({ r }) => r),
+      lowerIsBetter: kept.map(({ i }) => lowerIsBetter[i] ?? false),
+    });
   };
 
-  const updateCell = (rowIndex: number, colIndex: number, value: string) => {
-    const newRows = [...rows];
-    newRows[rowIndex][colIndex] = value;
-    setRows(newRows);
-  };
-
+  const updateHeader = (i: number, v: string) => setHeaders(headers.map((h, k) => (k === i ? v : h)));
+  const updateCell = (ri: number, ci: number, v: string) =>
+    setRows(rows.map((r, k) => (k === ri ? r.map((c, j) => (j === ci ? v : c)) : r)));
   const addRow = () => {
-    setRows([...rows, Array(numCols + 1).fill("")]);
+    setRows([...rows, Array(headers.length + 1).fill("")]);
+    setLowerIsBetter([...lowerIsBetter, false]);
   };
-
-  const removeRow = (index: number) => {
-    if (rows.length > 1) {
-      setRows(rows.filter((_, i) => i !== index));
-    }
+  const removeRow = (i: number) => {
+    if (rows.length === 1) return;
+    setRows(rows.filter((_, k) => k !== i));
+    setLowerIsBetter(lowerIsBetter.filter((_, k) => k !== i));
   };
-
   const addColumn = () => {
-    setNumCols(numCols + 1);
     setHeaders([...headers, String.fromCharCode(65 + headers.length)]);
-    setRows(rows.map(row => [...row, ""]));
+    setRows(rows.map((r) => [...r, ""]));
   };
-
-  const removeColumn = (index: number) => {
-    if (headers.length > 1) {
-      setNumCols(numCols - 1);
-      setHeaders(headers.filter((_, i) => i !== index));
-      setRows(rows.map(row => row.filter((_, i) => i !== index + 1))); // +1 because first col is parameter
-    }
+  const removeColumn = (i: number) => {
+    if (headers.length === 1) return;
+    setHeaders(headers.filter((_, k) => k !== i));
+    setRows(rows.map((r) => r.filter((_, k) => k !== i + 1)));
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <div className="flex gap-4 mb-6">
-        <button
-          onClick={() => setInputMode("manual")}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-            inputMode === "manual"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-          }`}
-        >
-          Manual Entry
-        </button>
-        <button
-          onClick={() => setInputMode("csv")}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-            inputMode === "csv"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-          }`}
-        >
-          Paste CSV/TSV
-        </button>
-      </div>
-
-      {/* Sample Data Selection */}
-      <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-        <p className="text-sm font-medium text-gray-700 mb-3">Load Sample Data:</p>
-        <div className="grid md:grid-cols-3 gap-3">
-          {SAMPLE_DATASETS.map((sample, index) => (
-            <button
-              key={index}
-              onClick={() => loadSampleData(index)}
-              className={`p-3 rounded-lg border text-left transition-colors ${
-                selectedSample === index
-                  ? "bg-green-100 border-green-400 ring-2 ring-green-400"
-                  : "bg-white border-gray-200 hover:border-green-300 hover:bg-green-50"
-              }`}
-            >
-              <p className="font-medium text-gray-900 text-sm">{sample.name}</p>
-              <p className="text-xs text-gray-500 mt-1">{sample.description}</p>
-            </button>
-          ))}
+    <section aria-labelledby="table-heading" className="mt-[var(--space-xl)]">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-[var(--space-md)] gap-y-[var(--space-2xs)]">
+        <h2 id="table-heading" className="text-[length:var(--text-lg)]">
+          The table
+        </h2>
+        <div role="group" aria-label="Input mode" className="flex gap-[var(--space-sm)] text-[length:var(--text-sm)]">
+          <button
+            type="button"
+            className="link"
+            aria-current={inputMode === "manual" ? "page" : undefined}
+            onClick={() => setInputMode("manual")}
+          >
+            Type it in
+          </button>
+          <button
+            type="button"
+            className="link"
+            aria-current={inputMode === "csv" ? "page" : undefined}
+            onClick={() => setInputMode("csv")}
+          >
+            Paste CSV or TSV
+          </button>
         </div>
-        {selectedSample !== null && (
-          <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-            <p className="text-xs font-medium text-blue-800">Context:</p>
-            <p className="text-sm text-blue-700">{SAMPLE_DATASETS[selectedSample].context}</p>
-          </div>
-        )}
+      </div>
+      <p className="mt-[var(--space-2xs)] max-w-[var(--measure)] text-muted">
+        Rows are parameters, columns are treatments. Keep the mean-separation letters on the numbers,
+        the way they appear in your table: <span className="font-mono">45ab</span>. Without letters the method
+        cannot say which treatments differ.
+      </p>
+
+      {/* Samples, hairline list */}
+      <div className="mt-[var(--space-md)]">
+        <p className="text-[length:var(--text-sm)] text-muted">Or start from a table in the book:</p>
+        <ul className="mt-[var(--space-2xs)] border-t border-rule">
+          {SAMPLE_DATASETS.map((s, i) => (
+            <li key={s.name} className="border-b border-rule">
+              <button
+                type="button"
+                onClick={() => loadSample(i)}
+                aria-pressed={selectedSample === i}
+                className="grid w-full grid-cols-1 gap-x-[var(--space-md)] py-[var(--space-xs)] text-left transition-[background-color] duration-[var(--dur-short)] ease-[var(--ease-out)] hover:bg-paper-2 aria-pressed:bg-paper-2 sm:grid-cols-[minmax(0,14rem)_minmax(0,1fr)]"
+              >
+                <span className="font-display text-[length:var(--text-md)] leading-tight">{s.name}</span>
+                <span className="text-[length:var(--text-sm)] text-muted">{s.source}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
 
       {inputMode === "csv" ? (
-        <div>
-          <p className="text-sm text-gray-600 mb-2">
-            Paste your table data. First row should be headers (treatment names), 
-            first column should be parameter names. Supports comma or tab separation.
-          </p>
+        <div className="mt-[var(--space-md)]">
+          <label htmlFor="csv" className="block text-[length:var(--text-sm)] text-muted">
+            First row: a blank or “Parameter” cell, then treatment names. Following rows: parameter, then values.
+          </label>
           <textarea
+            id="csv"
             value={csvText}
             onChange={(e) => setCsvText(e.target.value)}
-            placeholder={`Parameter,A,B,C,D
-Plant height (cm),200a,190a,180a,185a
-Total yield (g),1500a,1300a,600b,650b`}
-            className="w-full h-48 p-3 border rounded-lg font-mono text-sm text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            rows={8}
+            className="field mt-[var(--space-2xs)] font-mono text-[length:var(--text-sm)]"
+            placeholder={"Parameter,A,B,C,D\nPlant height (cm),200a,190a,180a,185a\nTotal yield (g),1500a,1300a,600b,650b"}
           />
-          <button
-            onClick={handleCSVSubmit}
-            className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-          >
-            Parse & Analyze
-          </button>
+          <div className="mt-[var(--space-sm)] flex items-center gap-[var(--space-md)]">
+            <button type="button" className="btn" onClick={submitCSV}>
+              Summarize
+            </button>
+            {error && (
+              <p role="alert" className="text-[length:var(--text-sm)] text-error">
+                {error}
+              </p>
+            )}
+          </div>
         </div>
       ) : (
-        <div>
-          <p className="text-sm text-gray-600 mb-4">
-            Enter your data table. First column is for parameter names, other columns are treatments.
-          </p>
-          
+        <div className="mt-[var(--space-md)]">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr>
-                  <th className="border p-2 bg-gray-50 text-left text-sm font-medium text-gray-700">
+                <tr className="border-b border-rule-strong">
+                  <th scope="col" className="py-[var(--space-2xs)] pr-[var(--space-xs)] text-left font-medium">
                     Parameter
                   </th>
-                  {headers.map((header, i) => (
-                    <th key={i} className="border p-1 bg-gray-50">
-                      <div className="flex items-center gap-1">
+                  {headers.map((h, i) => (
+                    <th key={i} scope="col" className="min-w-[6rem] py-[var(--space-2xs)] px-[var(--space-3xs)]">
+                      <div className="flex items-center gap-[var(--space-3xs)]">
                         <input
                           type="text"
-                          value={header}
+                          value={h}
                           onChange={(e) => updateHeader(i, e.target.value)}
-                          className="w-full p-1 text-center font-medium text-sm text-gray-900 border-0 bg-transparent focus:ring-1 focus:ring-blue-500 rounded"
-                          placeholder={`Treatment ${i + 1}`}
+                          aria-label={`Treatment ${i + 1} name`}
+                          className="field text-center font-medium"
                         />
                         {headers.length > 1 && (
                           <button
+                            type="button"
                             onClick={() => removeColumn(i)}
-                            className="text-red-400 hover:text-red-600 text-xs flex-shrink-0"
-                            title="Remove column"
+                            aria-label={`Remove column ${h || i + 1}`}
+                            className="link px-[var(--space-3xs)] text-[length:var(--text-sm)]"
                           >
-                            ✕
+                            ×
                           </button>
                         )}
                       </div>
                     </th>
                   ))}
-                  <th className="border p-2 bg-gray-50 w-10">
-                    <button
-                      onClick={addColumn}
-                      className="text-blue-600 hover:text-blue-800 text-lg font-bold"
-                      title="Add column"
-                    >
+                  <th scope="col" className="py-[var(--space-2xs)] pl-[var(--space-xs)] text-left text-[length:var(--text-xs)] font-normal text-muted">
+                    Lower is better
+                  </th>
+                  <th scope="col" className="w-8">
+                    <button type="button" onClick={addColumn} aria-label="Add column" className="link px-[var(--space-3xs)]">
                       +
                     </button>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {rows.map((row, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {row.map((cell, colIndex) => (
-                      <td key={colIndex} className="border p-1">
+                {rows.map((row, ri) => (
+                  <tr key={ri} className="border-b border-rule">
+                    {row.map((cell, ci) => (
+                      <td key={ci} className="py-[var(--space-3xs)] px-[var(--space-3xs)]">
                         <input
                           type="text"
                           value={cell}
-                          onChange={(e) => updateCell(rowIndex, colIndex, e.target.value)}
-                          className={`w-full p-1 text-sm text-gray-900 border-0 focus:ring-1 focus:ring-blue-500 rounded ${
-                            colIndex === 0 ? "font-medium" : "text-center"
-                          }`}
-                          placeholder={colIndex === 0 ? "Parameter name" : "Value"}
+                          onChange={(e) => updateCell(ri, ci, e.target.value)}
+                          aria-label={ci === 0 ? `Row ${ri + 1} parameter` : `Row ${ri + 1}, ${headers[ci - 1]}`}
+                          placeholder={ci === 0 ? "Parameter" : "45ab"}
+                          className={`field ${ci === 0 ? "font-medium" : "text-center font-mono text-[length:var(--text-sm)]"}`}
                         />
                       </td>
                     ))}
-                    <td className="border p-2 text-center">
+                    <td className="pl-[var(--space-xs)] text-center">
+                      <input
+                        type="checkbox"
+                        checked={lowerIsBetter[ri] ?? false}
+                        onChange={(e) =>
+                          setLowerIsBetter(lowerIsBetter.map((v, k) => (k === ri ? e.target.checked : v)))
+                        }
+                        aria-label={`Row ${ri + 1}: a lower value is the better result`}
+                        className="h-4 w-4 accent-[var(--color-accent)]"
+                      />
+                    </td>
+                    <td className="text-center">
                       <button
-                        onClick={() => removeRow(rowIndex)}
-                        className="text-red-500 hover:text-red-700 text-sm"
-                        title="Remove row"
+                        type="button"
+                        onClick={() => removeRow(ri)}
+                        aria-label={`Remove row ${ri + 1}`}
+                        className="link px-[var(--space-3xs)] text-[length:var(--text-sm)]"
                       >
-                        ✕
+                        ×
                       </button>
                     </td>
                   </tr>
@@ -325,22 +336,21 @@ Total yield (g),1500a,1300a,600b,650b`}
             </table>
           </div>
 
-          <div className="flex gap-4 mt-4">
-            <button
-              onClick={addRow}
-              className="px-4 py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
-            >
-              + Add Row
+          <div className="mt-[var(--space-sm)] flex flex-wrap items-center gap-[var(--space-md)]">
+            <button type="button" className="btn btn--quiet" onClick={addRow}>
+              Add row
             </button>
-            <button
-              onClick={handleManualSubmit}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-            >
-              Analyze Table
+            <button type="button" className="btn" onClick={submitManual}>
+              Summarize
             </button>
+            {error && (
+              <p role="alert" className="text-[length:var(--text-sm)] text-error">
+                {error}
+              </p>
+            )}
           </div>
         </div>
       )}
-    </div>
+    </section>
   );
 }
