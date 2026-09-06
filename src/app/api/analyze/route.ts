@@ -8,6 +8,7 @@
 // per-address rate limit. The key belongs to whoever deployed this.
 
 import { NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import OpenAI from "openai";
 import { buildPrompt, parseProse, SYSTEM, validateBody, type ProseRequest } from "@/lib/prose";
 
@@ -98,11 +99,13 @@ export async function POST(request: Request) {
     const prose = parseProse(res.choices[0]?.message.content);
     if (!prose) {
       console.error("Unreadable model response");
+      Sentry.captureMessage("Unreadable model response", { level: "warning", extra: { model: MODEL } });
       return NextResponse.json({ error: "The model returned an unreadable answer. Try again." }, { status: 502 });
     }
     return NextResponse.json(prose);
   } catch (error) {
     console.error("Analysis error:", error);
+    Sentry.captureException(error, { tags: { route: "analyze", model: MODEL } });
     // Pass the provider's own message through (no credits, invalid key, rate limit) so the page can say why.
     const e = error as { status?: number; message?: string };
     const upstream = typeof e?.status === "number" && e.status >= 400 && e.status < 600;

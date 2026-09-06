@@ -16,6 +16,8 @@ Next.js 16 (App Router, React Compiler), React 19, TypeScript, Tailwind CSS 4, O
 - `src/app/guide/page.tsx`: the Guide.
 - `src/components/Shell.tsx`: header, nav links, text size, footer. Used by `layout.tsx`.
 - `src/lib/samples.ts`: the five sample tables with slugs, and the custom-table URL codec.
+- `src/lib/csv.ts`: delimited text to a table. Quoted fields, doubled quotes, newlines in quotes, CRLF, comma or tab or semicolon. Tested in `csv.test.ts`.
+- `instrumentation-client.ts`, `instrumentation.ts`, `sentry.*.config.ts`, `src/app/error.tsx`, `src/app/global-error.tsx`: Sentry. Disabled without `NEXT_PUBLIC_SENTRY_DSN`. The route handler reports failures with tags.
 - `src/lib/prose.ts`: step 3 prompt, body validation with size caps, response parser. Tested in `prose.test.ts` with a recorded response, no key needed.
 - `src/components/`: TableInput (manual grid, CSV, five sample tables), HighlightedTable, InterpretationDisplay (stages 1.0, 2.0, 3.0), Guide.
 - `src/types/index.ts`: shared types, used by the function too.

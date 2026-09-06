@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import type { TableData } from "@/types";
 import Photo from "./Photo";
 import { SAMPLES } from "@/lib/samples";
+import { parseTable } from "@/lib/csv";
 
 interface TableInputProps {
   onChange: (draft: TableData | null, sampleId: string | null) => void;
@@ -34,7 +35,7 @@ export default function TableInput({ onChange, onObjectiveSuggested }: TableInpu
       return;
     }
     if (mode === "csv") {
-      onChange(parseCSV(csvText), null);
+      onChange(parseTable(csvText), null);
       return;
     }
     const kept = rows.map((r, i) => ({ r, i })).filter(({ r }) => r.some((c) => c.trim() !== ""));
@@ -170,6 +171,7 @@ export default function TableInput({ onChange, onObjectiveSuggested }: TableInpu
         <div className="mt-[var(--space-md)]">
           <label htmlFor="csv" className="text-muted block text-[length:var(--text-sm)]">
             First row: a blank or “Parameter” cell, then treatment names. Following rows: parameter, then values.
+            Commas, tabs, or semicolons. Quote a name that contains a comma.
           </label>
           <textarea
             id="csv"
@@ -307,15 +309,4 @@ export default function TableInput({ onChange, onObjectiveSuggested }: TableInpu
       )}
     </section>
   );
-}
-
-function parseCSV(text: string): TableData | null {
-  const lines = text
-    .trim()
-    .split("\n")
-    .filter((l) => l.trim());
-  if (lines.length < 2) return null;
-  const split = (line: string) => (line.includes("\t") ? line.split("\t") : line.split(",")).map((c) => c.trim());
-  const head = split(lines[0]);
-  return { headers: head.slice(1), rows: lines.slice(1).map(split) };
 }
