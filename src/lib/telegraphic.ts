@@ -7,15 +7,7 @@
 //         are "=". Treatments that share none are ">" in order of value.
 // Step 2: rows with the same line are collapsed into one group.
 
-import type {
-  HighlightedCell,
-  ParsedCell,
-  PatternGroup,
-  RowKind,
-  RowSummary,
-  TableData,
-  Telegraphic,
-} from "../types";
+import type { HighlightedCell, ParsedCell, PatternGroup, RowKind, RowSummary, TableData, Telegraphic } from "../types";
 
 const NS_WORDS = new Set(["ns", "n.s.", "n.s", "nsd"]);
 const EMPTY_WORDS = new Set(["", "-", "–", "—", "na", "n/a", "nd"]);
@@ -190,9 +182,7 @@ export function formatSummary(rows: RowSummary[], groups: PatternGroup[]): strin
   const width = Math.max(...rows.map((r) => r.parameter.length), 4) + 2;
   const perRow = rows.map((r) => r.parameter.padEnd(width) + r.pattern).join("\n");
   if (groups.length === rows.length) return perRow;
-  const grouped = groups
-    .map((g) => `{ ${g.parameters.join("; ")} }`.padEnd(width) + "  " + g.pattern)
-    .join("\n");
+  const grouped = groups.map((g) => `{ ${g.parameters.join("; ")} }`.padEnd(width) + "  " + g.pattern).join("\n");
   return `${perRow}\n\nCollapsed:\n${grouped}`;
 }
 

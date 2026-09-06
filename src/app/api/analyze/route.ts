@@ -71,10 +71,7 @@ export async function POST(request: Request) {
 
     const { tableData, objective, summary, facts = [], notes = [] } = (await request.json()) as Body;
     if (!tableData?.headers || !tableData?.rows || !summary || !objective?.trim()) {
-      return NextResponse.json(
-        { error: "Table, telegraphic summary, and objective are required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Table, telegraphic summary, and objective are required" }, { status: 400 });
     }
 
     const prompt = `OBJECTIVE OF THE EXPERIMENT:

@@ -40,7 +40,7 @@ export default function HighlightedTable({ tableData, rows, highlightedCells, fa
           row to read it in words.
         </caption>
         <thead>
-          <tr className="border-b border-rule-strong">
+          <tr className="border-rule-strong border-b">
             <th scope="col" className="py-[var(--space-2xs)] pr-[var(--space-sm)] text-left font-medium">
               Parameter
             </th>
@@ -49,7 +49,7 @@ export default function HighlightedTable({ tableData, rows, highlightedCells, fa
                 {h}
               </th>
             ))}
-            <th scope="col" className="pl-[var(--space-lg)] py-[var(--space-2xs)] text-left font-medium">
+            <th scope="col" className="py-[var(--space-2xs)] pl-[var(--space-lg)] text-left font-medium">
               Reads as
             </th>
           </tr>
@@ -60,7 +60,7 @@ export default function HighlightedTable({ tableData, rows, highlightedCells, fa
             return (
               <RowGroup key={ri} isOpen={isOpen}>
                 <tr
-                  className={`border-b border-rule transition-[background-color] duration-[var(--dur-short)] ease-[var(--ease-out)] ${isOpen ? "bg-paper-2" : "hover:bg-paper-2"}`}
+                  className={`border-rule border-b transition-[background-color] duration-[var(--dur-short)] ease-[var(--ease-out)] ${isOpen ? "bg-paper-2" : "hover:bg-paper-2"}`}
                 >
                   <th scope="row" className="py-[var(--space-xs)] pr-[var(--space-sm)] text-left font-normal">
                     <button
@@ -72,7 +72,9 @@ export default function HighlightedTable({ tableData, rows, highlightedCells, fa
                     >
                       {row.parameter}
                     </button>
-                    {row.lowerIsBetter && <span className="block text-[length:var(--text-xs)] text-muted">lower is better</span>}
+                    {row.lowerIsBetter && (
+                      <span className="text-muted block text-[length:var(--text-xs)]">lower is better</span>
+                    )}
                   </th>
                   {row.cells.map((cell, ci) => {
                     const h = find(ri, ci);
@@ -87,12 +89,12 @@ export default function HighlightedTable({ tableData, rows, highlightedCells, fa
                       </td>
                     );
                   })}
-                  <td className="pl-[var(--space-lg)] py-[var(--space-xs)]">
+                  <td className="py-[var(--space-xs)] pl-[var(--space-lg)]">
                     <Pattern row={row} headers={headers} size="sm" />
                   </td>
                 </tr>
                 {isOpen && (
-                  <tr id={`row-reading-${ri}`} className="rise border-b border-rule bg-paper-2">
+                  <tr id={`row-reading-${ri}`} className="rise border-rule bg-paper-2 border-b">
                     <td colSpan={cols} className="py-[var(--space-xs)] pr-[var(--space-sm)] pl-[var(--space-sm)]">
                       <p className="max-w-[var(--measure)] [text-wrap:pretty]">
                         <span className="text-muted">In words: </span>
@@ -106,7 +108,7 @@ export default function HighlightedTable({ tableData, rows, highlightedCells, fa
           })}
         </tbody>
       </table>
-      <p className="mt-[var(--space-xs)] text-[length:var(--text-xs)] text-muted">
+      <p className="text-muted mt-[var(--space-xs)] text-[length:var(--text-xs)]">
         <span className="chip chip--sm chip--top">A</span> best statistical group.{" "}
         <span className="chip chip--sm">C</span> lower group. Rows where every treatment shares a letter show no
         difference and get no mark (p83). Select a parameter to read its row in words.

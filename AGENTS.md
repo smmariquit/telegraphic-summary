@@ -16,13 +16,16 @@ Next.js 16 (App Router, React Compiler), React 19, TypeScript, Tailwind CSS 4, O
 - `src/types/index.ts`: shared types, used by the function too.
 - `src/app/tokens.css`, `src/app/globals.css`: design tokens (Hallmark stamp at the top of tokens.css) and the few shared classes (`.field`, `.btn`, `.link`, `.stage`, `.cell--top`).
 - `USER_GUIDE.md`: end-user docs, with page references to the book.
-- `.github/workflows/`: ci.yml (install + build), pr-checks.yml, stale.yml. Vercel deploys from GitHub on push to main.
+- `.github/workflows/`: ci.yml (check job: lint, typecheck, format, tests; then build), pr-checks.yml (semantic PR title, closing keyword), stale.yml. Dependabot weekly. Vercel deploys from GitHub on push to main.
+- `src/lib/book.ts`, `public/book/*.jpg`: photographs of the 1997 printing used as figures. `BookFigure` renders one with caption and page citation.
 
 ## Commands
 
 - Install: `npm install`
 - Dev: `npm run dev` (http://localhost:3000)
 - Test: `npm test`
+- Everything CI runs: `npm run check` (lint, typecheck, prettier check, tests)
+- Format: `npm run format`
 - Build: `npm run build`
 - Lint: `npm run lint`
 - Deploy: push to main; Vercel builds it.

@@ -20,6 +20,8 @@ Open http://localhost:3000. Without `OPENAI_API_KEY`, steps 1 and 2 still work; 
 |---------|----------------|
 | `npm run dev` | Next.js dev server |
 | `npm test` | Checks the core against Table 5 of the book |
+| `npm run check` | Lint, typecheck, Prettier check, tests. What CI runs. |
+| `npm run format` | Prettier, write |
 | `npm run build` | Production build |
 | `npm run lint` | ESLint |
 

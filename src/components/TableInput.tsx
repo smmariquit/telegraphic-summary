@@ -60,7 +60,19 @@ export const SAMPLE_DATASETS: SampleDataset[] = [
         "FM + Nitroplus",
       ],
       rows: [
-        ["Seed yield (t/ha)", "0.44d", "0.83ab", "0.76abc", "0.58bcd", "0.62bcd", "0.91a", "0.52cd", "0.68abcd", "0.65bcd", "0.57bcd"],
+        [
+          "Seed yield (t/ha)",
+          "0.44d",
+          "0.83ab",
+          "0.76abc",
+          "0.58bcd",
+          "0.62bcd",
+          "0.91a",
+          "0.52cd",
+          "0.68abcd",
+          "0.65bcd",
+          "0.57bcd",
+        ],
       ],
     },
   },
@@ -181,24 +193,25 @@ export default function TableInput({ onChange, onObjectiveSuggested }: TableInpu
         <h2 id="table-heading" className="text-[length:var(--text-lg)]">
           Choose a table
         </h2>
-        <p className="mt-[var(--space-2xs)] max-w-[var(--measure)] text-muted [text-wrap:pretty]">
-          Start with the book’s own example, or one of the practice tables. Each shows one thing the method has to handle.
+        <p className="text-muted mt-[var(--space-2xs)] max-w-[var(--measure)] [text-wrap:pretty]">
+          Start with the book’s own example, or one of the practice tables. Each shows one thing the method has to
+          handle.
         </p>
-        <ul className="mt-[var(--space-md)] border-t border-rule">
+        <ul className="border-rule mt-[var(--space-md)] border-t">
           {SAMPLE_DATASETS.map((s, i) => (
-            <li key={s.name} className="border-b border-rule">
+            <li key={s.name} className="border-rule border-b">
               <button
                 type="button"
                 onClick={() => loadSample(i)}
-                className="grid w-full grid-cols-1 gap-x-[var(--space-md)] py-[var(--space-sm)] text-left transition-[background-color] duration-[var(--dur-short)] ease-[var(--ease-out)] hover:bg-paper-2 sm:grid-cols-[minmax(0,15rem)_minmax(0,1fr)]"
+                className="hover:bg-paper-2 grid w-full grid-cols-1 gap-x-[var(--space-md)] py-[var(--space-sm)] text-left transition-[background-color] duration-[var(--dur-short)] ease-[var(--ease-out)] sm:grid-cols-[minmax(0,15rem)_minmax(0,1fr)]"
               >
                 <span className="font-display text-[length:var(--text-md)] leading-tight">{s.name}</span>
-                <span className="text-[length:var(--text-sm)] text-muted">{s.source}</span>
+                <span className="text-muted text-[length:var(--text-sm)]">{s.source}</span>
               </button>
             </li>
           ))}
         </ul>
-        <p className="mt-[var(--space-md)] text-[length:var(--text-sm)] text-muted">
+        <p className="text-muted mt-[var(--space-md)] text-[length:var(--text-sm)]">
           Or bring your own:{" "}
           <button type="button" className="link" onClick={startBlank}>
             type it in
@@ -242,12 +255,14 @@ export default function TableInput({ onChange, onObjectiveSuggested }: TableInpu
         </div>
       </div>
       {selectedSample !== null && (
-        <p className="mt-[var(--space-2xs)] text-[length:var(--text-sm)] text-muted">{SAMPLE_DATASETS[selectedSample].source}</p>
+        <p className="text-muted mt-[var(--space-2xs)] text-[length:var(--text-sm)]">
+          {SAMPLE_DATASETS[selectedSample].source}
+        </p>
       )}
 
       {mode === "csv" ? (
         <div className="mt-[var(--space-md)]">
-          <label htmlFor="csv" className="block text-[length:var(--text-sm)] text-muted">
+          <label htmlFor="csv" className="text-muted block text-[length:var(--text-sm)]">
             First row: a blank or “Parameter” cell, then treatment names. Following rows: parameter, then values.
           </label>
           <textarea
@@ -256,7 +271,9 @@ export default function TableInput({ onChange, onObjectiveSuggested }: TableInpu
             onChange={(e) => setCsvText(e.target.value)}
             rows={8}
             className="field mt-[var(--space-2xs)] font-mono text-[length:var(--text-sm)]"
-            placeholder={"Parameter,A,B,C,D\nPlant height (cm),200a,190a,180a,185a\nTotal yield (g),1500a,1300a,600b,650b"}
+            placeholder={
+              "Parameter,A,B,C,D\nPlant height (cm),200a,190a,180a,185a\nTotal yield (g),1500a,1300a,600b,650b"
+            }
           />
         </div>
       ) : (
@@ -266,7 +283,7 @@ export default function TableInput({ onChange, onObjectiveSuggested }: TableInpu
               <thead>
                 <tr>
                   <th scope="col" className="min-w-[13rem] text-left">
-                    <span className="block px-[var(--space-xs)] py-[var(--space-2xs)] text-[length:var(--text-sm)] text-muted">
+                    <span className="text-muted block px-[var(--space-xs)] py-[var(--space-2xs)] text-[length:var(--text-sm)]">
                       Parameter
                     </span>
                   </th>
@@ -295,12 +312,18 @@ export default function TableInput({ onChange, onObjectiveSuggested }: TableInpu
                     </th>
                   ))}
                   <th scope="col" className="w-[5.5rem]">
-                    <span className="block px-[var(--space-xs)] py-[var(--space-2xs)] text-center text-[length:var(--text-xs)] leading-tight text-muted">
+                    <span className="text-muted block px-[var(--space-xs)] py-[var(--space-2xs)] text-center text-[length:var(--text-xs)] leading-tight">
                       lower is better
                     </span>
                   </th>
                   <th scope="col" className="w-[2.5rem]">
-                    <button type="button" onClick={addColumn} aria-label="Add column" title="Add column" className="ghost w-full">
+                    <button
+                      type="button"
+                      onClick={addColumn}
+                      aria-label="Add column"
+                      title="Add column"
+                      className="ghost w-full"
+                    >
                       +
                     </button>
                   </th>
@@ -325,7 +348,9 @@ export default function TableInput({ onChange, onObjectiveSuggested }: TableInpu
                       <input
                         type="checkbox"
                         checked={lowerIsBetter[ri] ?? false}
-                        onChange={(e) => setLowerIsBetter(lowerIsBetter.map((v, k) => (k === ri ? e.target.checked : v)))}
+                        onChange={(e) =>
+                          setLowerIsBetter(lowerIsBetter.map((v, k) => (k === ri ? e.target.checked : v)))
+                        }
                         aria-label={`Row ${ri + 1}: a lower value is the better result`}
                         className="h-4 w-4 accent-[var(--color-accent)]"
                       />
@@ -350,8 +375,28 @@ export default function TableInput({ onChange, onObjectiveSuggested }: TableInpu
             <button type="button" className="btn btn--quiet" onClick={addRow}>
               Add row
             </button>
-            <p className="text-[length:var(--text-xs)] text-muted">Tab moves across cells. Letters stay on the numbers: 45ab.</p>
+            <p className="text-muted text-[length:var(--text-xs)]">Tab moves across cells.</p>
           </div>
+
+          <aside
+            className="note mt-[var(--space-md)] max-w-[var(--measure)] text-[length:var(--text-sm)]"
+            aria-label="What the letters mean"
+          >
+            <p className="font-medium">What the letters mean</p>
+            <p className="mt-[var(--space-3xs)] [text-wrap:pretty]">
+              The letters after the numbers come from the statistical test in the paper (DMRT, HSD, or LSD). Treatments
+              that share a letter are not different. Treatments with no letter in common are.
+            </p>
+            <p className="mt-[var(--space-2xs)] font-mono">
+              1500<span className="letters">a</span>&nbsp; 1300<span className="letters">a</span>&nbsp; 600
+              <span className="letters">b</span>&nbsp; 650<span className="letters">b</span>
+            </p>
+            <p className="text-muted mt-[var(--space-3xs)] [text-wrap:pretty]">
+              A and B share <span className="letters">a</span>, so they are equal. C and D share{" "}
+              <span className="letters">b</span>, so they are equal. A and C share nothing, so A is higher.{" "}
+              <span className="font-mono">45ab</span> belongs to both groups. Book p. 38 and p. 83.
+            </p>
+          </aside>
         </div>
       )}
     </section>
@@ -359,7 +404,10 @@ export default function TableInput({ onChange, onObjectiveSuggested }: TableInpu
 }
 
 function parseCSV(text: string): TableData | null {
-  const lines = text.trim().split("\n").filter((l) => l.trim());
+  const lines = text
+    .trim()
+    .split("\n")
+    .filter((l) => l.trim());
   if (lines.length < 2) return null;
   const split = (line: string) => (line.includes("\t") ? line.split("\t") : line.split(",")).map((c) => c.trim());
   const head = split(lines[0]);

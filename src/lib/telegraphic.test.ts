@@ -85,10 +85,27 @@ test("overlapping letters are flagged, not guessed", () => {
   // The peanut practice table: a, ab, abc, abcd, bcd, cd, d. Chaining would call all ten equal.
   const peanut = telegraphic({
     headers: ["Ctl", "Inorg", "VC", "VCB", "VCF", "VCN", "FM", "FMB", "FMF", "FMN"],
-    rows: [["Seed yield", "0.44d", "0.83ab", "0.76abc", "0.58bcd", "0.62bcd", "0.91a", "0.52cd", "0.68abcd", "0.65bcd", "0.57bcd"]],
+    rows: [
+      [
+        "Seed yield",
+        "0.44d",
+        "0.83ab",
+        "0.76abc",
+        "0.58bcd",
+        "0.62bcd",
+        "0.91a",
+        "0.52cd",
+        "0.68abcd",
+        "0.65bcd",
+        "0.57bcd",
+      ],
+    ],
   });
   assert.equal(peanut.rows[0].pattern, "Inorg=VC=VCN=FMB≥VCB=VCF=FMF=FMN≥FM≥Ctl");
-  assert.deepEqual(peanut.highlightedCells.map((c) => c.col), [1, 2, 5, 7]);
+  assert.deepEqual(
+    peanut.highlightedCells.map((c) => c.col),
+    [1, 2, 5, 7],
+  );
 });
 
 test("no letters and monotonic values read as a trend, not a difference", () => {

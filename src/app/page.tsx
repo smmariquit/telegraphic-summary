@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import TableInput from "@/components/TableInput";
 import InterpretationDisplay from "@/components/InterpretationDisplay";
 import Guide from "@/components/Guide";
+import BookFigure from "@/components/BookFigure";
 import { telegraphic as summarize } from "@/lib/telegraphic";
 import type { Prose, TableData, Telegraphic } from "@/types";
 
@@ -101,10 +102,10 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-paper text-ink">
+    <div className="bg-paper text-ink min-h-screen">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-[var(--space-sm)] focus:top-[var(--space-sm)] focus:z-10 focus:bg-ink focus:px-[var(--space-sm)] focus:py-[var(--space-2xs)] focus:text-paper"
+        className="focus:bg-ink focus:text-paper sr-only focus:not-sr-only focus:absolute focus:top-[var(--space-sm)] focus:left-[var(--space-sm)] focus:z-10 focus:px-[var(--space-sm)] focus:py-[var(--space-2xs)]"
       >
         Skip to content
       </a>
@@ -121,13 +122,27 @@ export default function Home() {
           Telegraphic Summary
         </button>
         <nav aria-label="Sections" className="flex items-baseline gap-[var(--space-md)] text-[length:var(--text-sm)]">
-          <button type="button" className="link" aria-current={tab === "tool" ? "page" : undefined} onClick={() => setTab("tool")}>
+          <button
+            type="button"
+            className="link"
+            aria-current={tab === "tool" ? "page" : undefined}
+            onClick={() => setTab("tool")}
+          >
             Worksheet
           </button>
-          <button type="button" className="link" aria-current={tab === "guide" ? "page" : undefined} onClick={() => setTab("guide")}>
+          <button
+            type="button"
+            className="link"
+            aria-current={tab === "guide" ? "page" : undefined}
+            onClick={() => setTab("guide")}
+          >
             Guide
           </button>
-          <div role="group" aria-label="Text size" className="ml-[var(--space-sm)] flex items-baseline gap-[var(--space-2xs)]">
+          <div
+            role="group"
+            aria-label="Text size"
+            className="ml-[var(--space-sm)] flex items-baseline gap-[var(--space-2xs)]"
+          >
             {(["normal", "large", "xlarge"] as TextSize[]).map((s, i) => (
               <button
                 key={s}
@@ -144,7 +159,10 @@ export default function Home() {
         </nav>
       </header>
 
-      <main id="main" className="mx-auto max-w-6xl px-[clamp(1rem,4vw,2rem)] pb-[var(--space-3xl)] pt-[var(--space-2xl)]">
+      <main
+        id="main"
+        className="mx-auto max-w-6xl px-[clamp(1rem,4vw,2rem)] pt-[var(--space-2xl)] pb-[var(--space-3xl)]"
+      >
         {tab === "guide" ? (
           <Guide />
         ) : !tableData || !telegraphic ? (
@@ -152,18 +170,35 @@ export default function Home() {
             <h1 className="max-w-[24ch] text-[length:var(--text-display)] [text-wrap:balance]">
               Read the table before you write about it.
             </h1>
-            <p className="mt-[var(--space-md)] max-w-[var(--measure)] text-[length:var(--text-md)] text-muted [text-wrap:pretty]">
+            <p className="text-muted mt-[var(--space-md)] max-w-[var(--measure)] text-[length:var(--text-md)] [text-wrap:pretty]">
               Three steps from Bautista and Bondad, <cite>Technical Writing for Beginners</cite>, 1997, Chapter 11.
               Summarize each row from its letters. Group the rows that agree. Turn each group into a sentence.
             </p>
 
+            {/* the book, in photographs */}
+            <div className="mt-[var(--space-xl)] grid gap-[var(--space-lg)] lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+              <BookFigure
+                fig="p81"
+                caption="Table 5, the book’s worked example. Every number carries a letter. Numbers that share a letter are not different; numbers with no letter in common are."
+                priority
+              />
+              <BookFigure
+                fig="p82"
+                caption="The same table, read. Eight rows collapse to two lines, and the two lines become two sentences."
+                priority
+              />
+            </div>
+
             {/* the method in one row, from Table 5 */}
-            <ol className="mt-[var(--space-xl)] grid gap-[var(--space-md)] border-y border-rule py-[var(--space-md)] text-[length:var(--text-sm)] sm:grid-cols-3 sm:divide-x sm:divide-rule">
+            <ol className="border-rule sm:divide-rule mt-[var(--space-xl)] grid gap-[var(--space-md)] border-y py-[var(--space-md)] text-[length:var(--text-sm)] sm:grid-cols-3 sm:divide-x">
               <li className="sm:pr-[var(--space-md)]">
                 <p className="text-muted">1. A row of the table</p>
                 <p className="mt-[var(--space-2xs)] font-mono text-[length:var(--text-md)]">
                   1500<span className="letters">a</span> · 1300<span className="letters">a</span> · 600
                   <span className="letters">b</span> · 650<span className="letters">b</span>
+                </p>
+                <p className="text-muted mt-[var(--space-2xs)]">
+                  a and a: no difference. a and b: different. From Table 5, total weight of fruits.
                 </p>
               </li>
               <li className="sm:px-[var(--space-md)]">
@@ -185,8 +220,8 @@ export default function Home() {
               <li className="sm:pl-[var(--space-md)]">
                 <p className="text-muted">3. Its sentence</p>
                 <p className="mt-[var(--space-2xs)] [text-wrap:pretty]">
-                  “Fertilizer B proved to be a good substitute for A since the growth and yield of plants fertilized with A
-                  and B were almost equal.”
+                  “Fertilizer B proved to be a good substitute for A since the growth and yield of plants fertilized
+                  with A and B were almost equal.”
                 </p>
               </li>
             </ol>
@@ -197,17 +232,24 @@ export default function Home() {
                 onObjectiveSuggested={(o) => {
                   setObjective(o);
                   setObjectiveMissing(false);
-                  window.setTimeout(() => objectiveSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+                  window.setTimeout(
+                    () => objectiveSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
+                    50,
+                  );
                 }}
               />
             </div>
 
             {draft && (
-              <section ref={objectiveSectionRef} aria-labelledby="objective-heading" className="rise mt-[var(--space-2xl)] scroll-mt-[var(--space-md)]">
+              <section
+                ref={objectiveSectionRef}
+                aria-labelledby="objective-heading"
+                className="rise mt-[var(--space-2xl)] scroll-mt-[var(--space-md)]"
+              >
                 <h2 id="objective-heading" className="text-[length:var(--text-lg)]">
                   State the objective
                 </h2>
-                <p className="mt-[var(--space-2xs)] max-w-[var(--measure)] text-muted [text-wrap:pretty]">
+                <p className="text-muted mt-[var(--space-2xs)] max-w-[var(--measure)] [text-wrap:pretty]">
                   “The discussion should answer the objectives. All others are secondary.” Page 80. The sentences in
                   step 3 are written to answer this.
                 </p>
@@ -228,7 +270,11 @@ export default function Home() {
                   className="field mt-[var(--space-sm)] max-w-[var(--measure)]"
                 />
                 {objectiveMissing && (
-                  <p id="objective-error" role="alert" className="mt-[var(--space-2xs)] text-[length:var(--text-sm)] text-error">
+                  <p
+                    id="objective-error"
+                    role="alert"
+                    className="text-error mt-[var(--space-2xs)] text-[length:var(--text-sm)]"
+                  >
                     Write the objective first. Without it the method cannot decide what to say first.
                   </p>
                 )}
@@ -244,7 +290,7 @@ export default function Home() {
           <>
             <div className="flex flex-wrap items-baseline justify-between gap-[var(--space-sm)]">
               <div className="max-w-[var(--measure)]">
-                <p className="text-[length:var(--text-sm)] text-muted">Objective</p>
+                <p className="text-muted text-[length:var(--text-sm)]">Objective</p>
                 <h1 className="text-[length:var(--text-lg)] [text-wrap:balance]">{objective}</h1>
               </div>
               <button type="button" className="btn btn--quiet" onClick={reset}>
@@ -267,14 +313,15 @@ export default function Home() {
         )}
       </main>
 
-      <footer className="border-t border-rule">
-        <p className="mx-auto max-w-6xl px-[clamp(1rem,4vw,2rem)] py-[var(--space-lg)] font-mono text-[length:var(--text-xs)] leading-[1.7] text-muted">
+      <footer className="border-rule border-t">
+        <p className="text-muted mx-auto max-w-6xl px-[clamp(1rem,4vw,2rem)] py-[var(--space-lg)] font-mono text-[length:var(--text-xs)] leading-[1.7]">
           Method: Bautista, O.K., and N.D. Bondad. 1997. Technical writing for beginners. ECRC and Associates, Los
-          Baños, Laguna. ISBN 971-91902-0-5. Ch. 11, Interpreting data, pp. 80–85; Ch. 14, Language usage, pp.
-          106–113. Revised 2012 as Bautista, Rosario, and Bautista Jr., Technical writing for publication in journals
-          and for presentation, UPLB/UPLBFI, ISBN 978-971-547-303-3. Steps 1 and 2 computed locally from the
-          mean-separation letters. Step 3 written by a language model under the book’s rules. Sample tables: Table 5 of
-          the book and four practice tables supplied with it.
+          Baños, Laguna. ISBN 971-91902-0-5. Ch. 11, Interpreting data, pp. 80–85; Ch. 14, Language usage, pp. 106–113.
+          Revised 2012 as Bautista, Rosario, and Bautista Jr., Technical writing for publication in journals and for
+          presentation, UPLB/UPLBFI, ISBN 978-971-547-303-3. Steps 1 and 2 computed locally from the mean-separation
+          letters. Step 3 written by a language model under the book’s rules. Sample tables: Table 5 of the book and
+          four practice tables supplied with it. Page images are photographs of the 1997 printing, shown for study of
+          the method.
         </p>
       </footer>
     </div>

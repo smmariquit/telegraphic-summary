@@ -291,6 +291,59 @@ h3 {
   color: var(--color-muted);
 }
 
+/* photographs of the book */
+.figure {
+  margin: 0;
+  min-width: 0;
+}
+.figure__link {
+  display: block;
+  border: var(--rule-hair) solid var(--color-rule-strong);
+  border-radius: var(--radius-input);
+  overflow: hidden;
+  background: var(--color-paper-2);
+  transition: border-color var(--dur-short) var(--ease-out);
+}
+.figure__link:hover {
+  border-color: var(--color-ink);
+}
+.figure__link img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.figure__cap {
+  margin-top: var(--space-2xs);
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  text-wrap: pretty;
+}
+.figure__cite {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+}
+.figure--thumb .figure__cap {
+  font-size: var(--text-xs);
+}
+
+/* a quotation from the book */
+.quote {
+  margin: 0;
+  padding-left: var(--space-sm);
+  border-left: var(--rule-hair) solid var(--color-rule-strong);
+  color: var(--color-ink);
+  text-wrap: pretty;
+}
+.quote cite {
+  display: block;
+  margin-top: var(--space-3xs);
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+}
+
 /* cautions, full border not a stripe */
 .note {
   padding: var(--space-sm);
