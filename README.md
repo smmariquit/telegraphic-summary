@@ -8,7 +8,7 @@ Live at https://telsum.stimmie.dev (Vercel).
 
 ```bash
 npm install
-cp .env.example .env.local   # then put your OpenAI key in it
+echo "OPENAI_API_KEY=sk-..." > .env.local
 npm run dev
 ```
 
