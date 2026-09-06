@@ -15,7 +15,7 @@
   --color-paper-3: oklch(89% 0.026 140);
   --color-rule: oklch(80% 0.022 140);
   --color-rule-strong: oklch(30% 0.03 140);
-  --color-neutral: oklch(56% 0.02 140);
+  --color-neutral: oklch(48% 0.02 140); /* placeholders, 4.5:1 on paper */
   --color-muted: oklch(40% 0.022 140);
   --color-ink: oklch(20% 0.025 140);
   --color-accent: oklch(46% 0.15 25);

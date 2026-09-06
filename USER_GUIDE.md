@@ -30,11 +30,13 @@ Step 3. Each collapsed line becomes a sentence that answers the objective. The b
 
 ## Using the tool
 
-1. Write the objective. It is required. The book: "the discussion should answer the objectives. All others are secondary."
-2. Enter the table. Type it in, or paste comma- or tab-separated text. Rows are parameters, columns are treatments. Keep the letters on the numbers: `45ab`, `0.44 d`, `1500a`. If a smaller number is the better result for a row, such as a disease rating, tick "lower is better" for that row.
-3. Press Summarize.
+The worksheet shows one thing at a time, so it can be walked through in a class.
 
-Or load one of the five tables under "start from a table in the book": Table 5, and four practice tables that came with the book (peanut soil additives, broiler feed, rice wine yeast, mango wash treatments).
+1. Choose a table. Pick Table 5 or one of the four practice tables (peanut soil additives, broiler feed, rice wine yeast, mango wash treatments), or bring your own: type it in, or paste comma- or tab-separated text. Rows are parameters, columns are treatments. Keep the letters on the numbers: `45ab`, `0.44 d`, `1500a`. If a smaller number is the better result for a row, such as a disease rating, tick "lower is better" for that row.
+2. State the objective. It is required. The book: "the discussion should answer the objectives. All others are secondary." Sample tables come with a suggested objective you can edit.
+3. Start step 1. Only the row summaries appear. Select any parameter to read that row in words.
+4. Next, step 2. The grouped lines appear below.
+5. Next, step 3. The sentences and paragraph are written. This is the only step that calls the language model.
 
 ## Reading the result
 
