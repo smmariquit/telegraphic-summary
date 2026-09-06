@@ -4,28 +4,28 @@ Paste a research data table with mean-separation letters, state the objective, g
 
 ## Stack
 
-Next.js 16 (App Router, static export, React Compiler), React 19, TypeScript, Tailwind CSS 4, Cloudflare Pages + Pages Functions, OpenAI SDK.
+Next.js 16 (App Router, React Compiler), React 19, TypeScript, Tailwind CSS 4, OpenAI SDK. Hosted on Vercel at telsum.stimmie.dev.
 
 ## Key files
 
 - `src/lib/telegraphic.ts`: steps 1 and 2 of the method, deterministic. Parses `45ab` cells, builds `A=B>C=D` lines from letters, collapses equal rows, picks highlight cells. No model.
 - `src/lib/telegraphic.test.ts`: `npm test`. Asserts Table 5 of the book reproduces the book's groups, plus overlap, trend, and lower-is-better cases.
-- `functions/api/analyze.ts`: Cloudflare Pages Function, POST /api/analyze. Step 3 only. Receives objective, table, finished summary, returns `{ sentences, paragraph }`. System prompt encodes the book's rules with page numbers. Needs `OPENAI_API_KEY`.
+- `src/app/api/analyze/route.ts`: Next route handler, POST /api/analyze. Step 3 only. Receives objective, table, finished summary, returns `{ sentences, paragraph }`. System prompt encodes the book's rules with page numbers. Needs `OPENAI_API_KEY`.
 - `src/app/page.tsx`: single client page. Objective (required), table input, results as three stages.
 - `src/components/`: TableInput (manual grid, CSV, five sample tables), HighlightedTable, InterpretationDisplay (stages 1.0, 2.0, 3.0), Guide.
 - `src/types/index.ts`: shared types, used by the function too.
 - `src/app/tokens.css`, `src/app/globals.css`: design tokens (Hallmark stamp at the top of tokens.css) and the few shared classes (`.field`, `.btn`, `.link`, `.stage`, `.cell--top`).
 - `USER_GUIDE.md`: end-user docs, with page references to the book.
-- `.github/workflows/`: ci.yml (install + build), deploy-cloudflare.yml (wrangler deploy on push to main).
+- `.github/workflows/`: ci.yml (install + build), pr-checks.yml, stale.yml. Vercel deploys from GitHub on push to main.
 
 ## Commands
 
 - Install: `npm install`
 - Dev: `npm run dev` (http://localhost:3000)
 - Test: `npm test`
-- Build: `npm run build` (static export to `out/`)
+- Build: `npm run build`
 - Lint: `npm run lint`
-- Deploy (CI does this on push to main): `wrangler pages deploy out --project-name=telegraphic-summary`
+- Deploy: push to main; Vercel builds it.
 
 ## Rules
 
@@ -36,8 +36,17 @@ Next.js 16 (App Router, static export, React Compiler), React 19, TypeScript, Ta
 
 ## Gotchas
 
-- `output: "export"`: no Next API routes. The only backend is `functions/api/analyze.ts`, deployed alongside `out/` by Cloudflare Pages.
-- `npm run dev` does not serve `/api/analyze`; stage 3 shows an error locally unless run under the Cloudflare Functions runtime with `OPENAI_API_KEY`.
+- Local dev needs `OPENAI_API_KEY` in `.env.local` for stage 3; stages 1 and 2 work without it.
 - `**/*.test.ts` is excluded from tsconfig so the `./telegraphic.ts` import (needed by Node's type stripping) does not break `next build`.
 - Text size is a `data-size` attribute on `<html>` scaling root font-size, not per-component class maps.
-- Secrets: GitHub Actions has `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`; `OPENAI_API_KEY` lives in Cloudflare Pages, set via `wrangler pages secret put`.
+- `OPENAI_API_KEY` lives in the Vercel project (Production and Preview). The old Cloudflare Pages project still exists but is not production.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

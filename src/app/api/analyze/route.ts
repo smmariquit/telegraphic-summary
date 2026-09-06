@@ -1,4 +1,4 @@
-// functions/api/analyze.ts
+// src/app/api/analyze/route.ts
 //
 // Step 3 of the telegraphic summary (Bautista and Bondad 1997, p82):
 // translate the grouped telegraphic lines into sentences, then a paragraph.
@@ -6,13 +6,9 @@
 // arrive here as text. The model writes prose only. It never decides which
 // treatments differ.
 
+import { NextResponse } from "next/server";
 import OpenAI from "openai";
-import type { Prose, TableData } from "../../src/types";
-
-type AnalyzeContext = {
-  request: Request;
-  env: { OPENAI_API_KEY?: string };
-};
+import type { Prose, TableData } from "@/types";
 
 type Body = {
   tableData: TableData;
@@ -60,20 +56,23 @@ Rules from the book, all mandatory:
 - Avoid these wordy phrases (book list, p108 to 113): ${WORDY.map(([w, b]) => `"${w}" (use ${b})`).join("; ")}.
 - Use the treatment names exactly as given in the table headers.`;
 
-export const onRequestPost = async (context: AnalyzeContext) => {
+export async function POST(request: Request) {
   try {
-    if (!context.env.OPENAI_API_KEY) {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
       console.error("Missing OPENAI_API_KEY");
-      return Response.json(
-        { error: "The writing service has no OPENAI_API_KEY set on the Pages project." },
+      return NextResponse.json(
+        { error: "The writing service has no OPENAI_API_KEY set in the project environment." },
         { status: 500 },
       );
     }
 
-    const body = (await context.request.json()) as Body;
-    const { tableData, objective, summary, notes = [] } = body;
+    const { tableData, objective, summary, notes = [] } = (await request.json()) as Body;
     if (!tableData?.headers || !tableData?.rows || !summary || !objective?.trim()) {
-      return Response.json({ error: "Table, telegraphic summary, and objective are required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Table, telegraphic summary, and objective are required" },
+        { status: 400 },
+      );
     }
 
     const prompt = `OBJECTIVE OF THE EXPERIMENT:
@@ -94,7 +93,7 @@ Write step 3 of the method (p82).
 
 Respond ONLY with JSON: {"sentences": ["..."], "paragraph": "..."}`;
 
-    const openai = new OpenAI({ apiKey: context.env.OPENAI_API_KEY });
+    const openai = new OpenAI({ apiKey });
     const res = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       temperature: 0.2,
@@ -114,15 +113,21 @@ Respond ONLY with JSON: {"sentences": ["..."], "paragraph": "..."}`;
       };
     } catch {
       console.error("Failed to parse model response");
-      return Response.json({ error: "The model returned an unreadable answer. Try again." }, { status: 502 });
+      return NextResponse.json({ error: "The model returned an unreadable answer. Try again." }, { status: 502 });
     }
 
-    return Response.json(prose);
+    return NextResponse.json(prose);
   } catch (error) {
     console.error("Analysis error:", error);
-    return Response.json({ error: "Failed to write the interpretation" }, { status: 500 });
+    // Pass the provider's own message through (no credits, invalid key, rate limit) so the page can say why.
+    const e = error as { status?: number; message?: string };
+    const upstream = typeof e?.status === "number" && e.status >= 400 && e.status < 600;
+    return NextResponse.json(
+      { error: upstream ? `Writing service: ${e.message}` : "Failed to write the interpretation" },
+      { status: upstream ? 502 : 500 },
+    );
   }
-};
+}
 
 function formatTable(t: TableData): string {
   const head = `| Parameter | ${t.headers.join(" | ")} |`;
