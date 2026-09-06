@@ -49,7 +49,7 @@ export default function Home() {
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tableData: data, objective, summary: t.summary, notes: t.notes }),
+        body: JSON.stringify({ tableData: data, objective, summary: t.summary, facts: t.facts, notes: t.notes }),
       });
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: string };

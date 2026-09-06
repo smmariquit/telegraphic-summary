@@ -52,6 +52,8 @@ export interface Telegraphic {
   highlightedCells: HighlightedCell[];
   /** Plain-text telegraphic summary, one line per group. */
   summary: string;
+  /** One plain-English statement per group, derived from the letters. What the model may say. */
+  facts: string[];
   /** Cases the book does not settle. Shown to the user, sent to the author. */
   notes: string[];
 }

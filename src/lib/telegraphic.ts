@@ -196,6 +196,46 @@ export function formatSummary(rows: RowSummary[], groups: PatternGroup[]): strin
   return `${perRow}\n\nCollapsed:\n${grouped}`;
 }
 
+function list(names: string[]): string {
+  if (names.length <= 1) return names[0] ?? "";
+  if (names.length === 2) return `${names[0]} and ${names[1]}`;
+  return `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
+}
+
+/** Plain-English reading of one group, from the tiers of its first row. The model gets this, not the notation. */
+export function describeGroup(group: PatternGroup, rows: RowSummary[], headers: string[]): string {
+  const row = rows.find((r) => r.pattern === group.pattern);
+  const params = list(group.parameters);
+  if (!row) return `${params}: no reading.`;
+  const name = (i: number) => headers[i] ?? String.fromCharCode(65 + i);
+  const word = row.lowerIsBetter ? "better (lower)" : "greater";
+
+  if (row.kind === "nodata") return `${params}: no data.`;
+  if (row.kind === "same") return `${params}: the treatments did not differ from one another.`;
+  if (row.kind === "trend") {
+    const m = row.pattern.match(/;\s*(.+)$/);
+    return `${params}: the treatments did not differ statistically, but values were ${m ? m[1] : "in a consistent trend"}. This is a trend only.`;
+  }
+
+  const parts: string[] = [];
+  const tiers = row.tiers.map((t) => t.map(name));
+  for (let k = 0; k < tiers.length; k++) {
+    const here = tiers[k];
+    const below = tiers.slice(k + 1).flat();
+    if (here.length === 1 && below.length === 0) continue; // already named as "below" of the tier above
+    let s = here.length > 1 ? `${list(here)} did not differ from one another` : here[0];
+    if (below.length) {
+      const shared = row.overlapping && row.pattern.includes("≥");
+      s +=
+        (here.length > 1 ? "; " : " ") +
+        `${here.length > 1 ? "they were" : "was"} ${word} than ${list(below)}` +
+        (shared ? " (some of these share a letter, so the separation is not clean)" : "");
+    }
+    parts.push(s);
+  }
+  return `${params}: ${parts.join(". ")}.`;
+}
+
 export function telegraphic(table: TableData): Telegraphic {
   const headers = table.headers;
   const rows = table.rows.map((row, i) =>
@@ -222,5 +262,6 @@ export function telegraphic(table: TableData): Telegraphic {
     );
   }
 
-  return { rows, groups, highlightedCells, summary: formatSummary(rows, groups), notes };
+  const facts = groups.map((g) => describeGroup(g, rows, headers));
+  return { rows, groups, highlightedCells, summary: formatSummary(rows, groups), facts, notes };
 }

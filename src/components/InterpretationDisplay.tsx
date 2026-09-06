@@ -75,6 +75,12 @@ export default function InterpretationDisplay({ tableData, telegraphic, prose, p
                 </div>
               ))}
             </dl>
+            <h3 className="mt-[var(--space-lg)] text-[length:var(--text-md)]">Read in words</h3>
+            <ol className="mt-[var(--space-2xs)] max-w-[var(--measure)] list-decimal space-y-[var(--space-2xs)] pl-[var(--space-md)] text-[length:var(--text-sm)]">
+              {telegraphic.facts.map((f) => (
+                <li key={f}>{f}</li>
+              ))}
+            </ol>
           </div>
         </div>
       </section>

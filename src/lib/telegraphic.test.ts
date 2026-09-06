@@ -48,6 +48,17 @@ test("Table 5: yield rows read A=B>C=D, growth rows read A=B=C=D or NS", () => {
     "Mean weight of fruits (g)",
   ]);
 
+  // Plain-English facts for the model, one per group, derived from the letters.
+  assert.equal(t.facts.length, t.groups.length);
+  assert.equal(
+    t.facts[2],
+    "Total weight of fruits (g), Fruits/plant (No.), and Mean weight of fruits (g): A and B did not differ from one another; they were greater than C and D. C and D did not differ from one another.",
+  );
+  assert.equal(
+    t.facts[1],
+    "Shoot dry weight (g): A, B, and D did not differ from one another; they were greater than C.",
+  );
+
   // Only rows that differ get highlights, and only the top tier (A and B).
   const yieldRow = 5;
   const cols = t.highlightedCells.filter((c) => c.row === yieldRow).map((c) => c.col);

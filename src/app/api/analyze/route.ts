@@ -14,6 +14,7 @@ type Body = {
   tableData: TableData;
   objective: string;
   summary: string;
+  facts?: string[];
   notes?: string[];
 };
 
@@ -68,7 +69,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { tableData, objective, summary, notes = [] } = (await request.json()) as Body;
+    const { tableData, objective, summary, facts = [], notes = [] } = (await request.json()) as Body;
     if (!tableData?.headers || !tableData?.rows || !summary || !objective?.trim()) {
       return NextResponse.json(
         { error: "Table, telegraphic summary, and objective are required" },
@@ -84,11 +85,14 @@ ${formatTable(tableData)}
 
 TELEGRAPHIC SUMMARY (step 1 and 2, already done, do not change it):
 ${summary}
+
+WHAT EACH LINE MEANS (the only comparisons you may state; do not add, reverse, or split any):
+${facts.map((f, i) => `${i + 1}. ${f}`).join("\n")}
 ${notes.length ? `\nCAUTIONS:\n${notes.map((n) => `- ${n}`).join("\n")}` : ""}
 
 Write step 3 of the method (p82).
 
-1. "sentences": one sentence per line of the collapsed summary (or per row if nothing collapsed). Each sentence translates that telegraphic line into a meaningful statement that answers the objective, in the manner of the book's example: "Fertilizer B proved to be a good substitute for A since the growth and yield of plants fertilized with A and B were almost equal." Order the sentences so the one that answers the objective comes first.
+1. "sentences": exactly ${facts.length || "one per line"} sentences, one for each numbered meaning above, no more. Each sentence turns that meaning into a statement that answers the objective, in the manner of the book's example: "Fertilizer B proved to be a good substitute for A since the growth and yield of plants fertilized with A and B were almost equal." Order the sentences so the one that answers the objective comes first.
 
 2. "paragraph": the sentences expanded into one paragraph of 3 to 6 sentences, as the book describes: "Each of the two sentences can be expanded into paragraphs by giving explanations, clarifications, and citing literature." You have no literature. Where an explanation would need a citation, write the placeholder "[cite]" in place of the source. Do not fabricate a reason.
 
