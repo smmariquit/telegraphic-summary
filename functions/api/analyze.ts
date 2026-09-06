@@ -64,7 +64,10 @@ export const onRequestPost = async (context: AnalyzeContext) => {
   try {
     if (!context.env.OPENAI_API_KEY) {
       console.error("Missing OPENAI_API_KEY");
-      return Response.json({ error: "Failed to write the interpretation" }, { status: 500 });
+      return Response.json(
+        { error: "The writing service has no OPENAI_API_KEY set on the Pages project." },
+        { status: 500 },
+      );
     }
 
     const body = (await context.request.json()) as Body;
