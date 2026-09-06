@@ -8,6 +8,8 @@
 
 import { useEffect, useState } from "react";
 import type { TableData } from "@/types";
+import Photo from "./Photo";
+import type { PhotoKey } from "@/lib/photos";
 
 interface TableInputProps {
   onChange: (draft: TableData | null) => void;
@@ -16,6 +18,7 @@ interface TableInputProps {
 
 interface SampleDataset {
   name: string;
+  photo: PhotoKey;
   source: string;
   objective: string;
   data: TableData;
@@ -25,6 +28,7 @@ interface SampleDataset {
 export const SAMPLE_DATASETS: SampleDataset[] = [
   {
     name: "Cucumber fertilizer trial",
+    photo: "cucumber",
     source: "Table 5, p81. The book’s own worked example.",
     objective:
       "Look for a substitute for the costlier and more-difficult-to-prepare standard fertilizer A among formulations B, C, and D.",
@@ -44,6 +48,7 @@ export const SAMPLE_DATASETS: SampleDataset[] = [
   },
   {
     name: "Peanut soil additives",
+    photo: "peanut",
     source: "Practice table. One row, ten treatments, overlapping letters.",
     objective: "Find a soil additive that matches inorganic fertilizer in peanut seed yield.",
     data: {
@@ -78,6 +83,7 @@ export const SAMPLE_DATASETS: SampleDataset[] = [
   },
   {
     name: "Broiler Acacia pod meal",
+    photo: "broiler",
     source: "Practice table. No letters, only a trend.",
     objective: "Determine how much Acacia pod meal can replace conventional feed without reducing broiler growth.",
     data: {
@@ -92,6 +98,7 @@ export const SAMPLE_DATASETS: SampleDataset[] = [
   },
   {
     name: "Rice wine yeast",
+    photo: "ricewine",
     source: "Practice table. Two factors read as four treatments.",
     objective: "Compare young and aged rice yeast, at warm and cold rice temperature, for rice wine quality.",
     data: {
@@ -106,6 +113,7 @@ export const SAMPLE_DATASETS: SampleDataset[] = [
   },
   {
     name: "Mango wash treatments",
+    photo: "mango",
     source: "Practice table. One row where lower is better.",
     objective: "Find a wash treatment that lowers disease and keeps fruit quality during storage.",
     data: {
@@ -203,10 +211,11 @@ export default function TableInput({ onChange, onObjectiveSuggested }: TableInpu
               <button
                 type="button"
                 onClick={() => loadSample(i)}
-                className="hover:bg-paper-2 grid w-full grid-cols-1 gap-x-[var(--space-md)] py-[var(--space-sm)] text-left transition-[background-color] duration-[var(--dur-short)] ease-[var(--ease-out)] sm:grid-cols-[minmax(0,15rem)_minmax(0,1fr)]"
+                className="hover:bg-paper-2 grid w-full grid-cols-[6rem_minmax(0,1fr)] items-center gap-x-[var(--space-md)] gap-y-[var(--space-3xs)] py-[var(--space-xs)] text-left transition-[background-color] duration-[var(--dur-short)] ease-[var(--ease-out)] sm:grid-cols-[6rem_minmax(0,14rem)_minmax(0,1fr)]"
               >
+                <Photo photo={s.photo} size="thumb" />
                 <span className="font-display text-[length:var(--text-md)] leading-tight">{s.name}</span>
-                <span className="text-muted text-[length:var(--text-sm)]">{s.source}</span>
+                <span className="text-muted col-start-2 text-[length:var(--text-sm)] sm:col-start-3">{s.source}</span>
               </button>
             </li>
           ))}

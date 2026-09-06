@@ -9,7 +9,6 @@ import { useEffect, useRef } from "react";
 import type { Prose, RowSummary, TableData, Telegraphic } from "@/types";
 import HighlightedTable from "./HighlightedTable";
 import Pattern from "./Pattern";
-import BookFigure from "./BookFigure";
 
 interface Props {
   tableData: TableData;
@@ -105,7 +104,6 @@ export default function InterpretationDisplay({
               the experiment.”
               <cite>Bautista and Bondad, 1997, p. 80</cite>
             </blockquote>
-            <BookFigure fig="p80" size="thumb" caption="Where the row lines begin." />
           </>
         }
       >
@@ -144,7 +142,6 @@ export default function InterpretationDisplay({
                 “The preceding could be further summarized to:”
                 <cite>Bautista and Bondad, 1997, p. 82</cite>
               </blockquote>
-              <BookFigure fig="p82" size="thumb" caption="Table 5 collapsed to A=B=C=D and A=B>[C=D]." />
             </>
           }
         >
@@ -200,11 +197,11 @@ export default function InterpretationDisplay({
                 “Look for trends or patterns and state them. Avoid citing data one by one as they appear in a table.”
                 <cite>Bautista and Bondad, 1997, p. 82</cite>
               </blockquote>
-              <BookFigure
-                fig="p83"
-                size="thumb"
-                caption="Use statistical analysis as a guide. Insignificant means no effect."
-              />
+              <blockquote className="quote">
+                “If the differences are statistically insignificant, the treatments definitely had no effect on the
+                parameter measured. Any numerical difference is due to factors other than the treatment.”
+                <cite>Bautista and Bondad, 1997, p. 83</cite>
+              </blockquote>
             </>
           }
         >

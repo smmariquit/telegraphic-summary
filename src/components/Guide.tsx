@@ -4,7 +4,8 @@
 
 "use client";
 
-import BookFigure from "./BookFigure";
+import Photo, { Credit } from "./Photo";
+import { PHOTOS, type PhotoKey } from "@/lib/photos";
 
 function Rule({ children, page }: { children: React.ReactNode; page: string }) {
   return (
@@ -37,13 +38,10 @@ export default function Guide() {
             <cite>Bautista and Bondad, 1997, p. 80</cite>
           </blockquote>
         </div>
-        <BookFigure fig="cover" caption="The 1997 printing." />
+        <Photo photo="cucumber" caption="Cucumber, the crop in the book’s worked example." />
       </section>
 
-      <section
-        aria-labelledby="g-step1"
-        className="grid gap-[var(--space-lg)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]"
-      >
+      <section aria-labelledby="g-step1">
         <div className="max-w-[var(--measure)]">
           <h2 id="g-step1" className="text-[length:var(--text-xl)]">
             Step 1. One line per row
@@ -66,16 +64,9 @@ Mean weight of fruits  A=B>C=D`}
             own line says A=B&gt;C=D. The tool follows the letters as printed and notes the difference.
           </p>
         </div>
-        <BookFigure
-          fig="p81"
-          caption="Table 5. Growth and yield of ‘Pointsett’ cucumber applied with different fertilizers."
-        />
       </section>
 
-      <section
-        aria-labelledby="g-step2"
-        className="grid gap-[var(--space-lg)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]"
-      >
+      <section aria-labelledby="g-step2">
         <div className="max-w-[var(--measure)]">
           <h2 id="g-step2" className="text-[length:var(--text-xl)]">
             Step 2. Collapse the lines
@@ -93,7 +84,6 @@ Mean weight of fruits  A=B>C=D`}
             <cite>Bautista and Bondad, 1997, p. 82</cite>
           </blockquote>
         </div>
-        <BookFigure fig="p82" caption="Page 82. The collapsed summary and the two sentences it becomes." />
       </section>
 
       <section aria-labelledby="g-step3" className="max-w-[var(--measure)]">
@@ -145,10 +135,19 @@ Mean weight of fruits  A=B>C=D`}
             </Rule>
           </ul>
         </div>
-        <div className="grid gap-[var(--space-md)] sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-          <BookFigure fig="p83" size="thumb" caption="Statistics as the guide." />
-          <BookFigure fig="p84" size="thumb" caption="State effects, not significance." />
-          <BookFigure fig="p85" size="thumb" caption="Interpret rather than state." />
+        <div className="space-y-[var(--space-md)]">
+          <blockquote className="quote">
+            “State the effects rather than the statistical significance. Instead of saying ‘Phosphorus application
+            resulted in a significantly higher leaf P concentration’, say ‘Phosphorus application resulted in higher
+            leaf P concentration.’ Use the words significant and insignificant sparingly.”
+            <cite>Bautista and Bondad, 1997, p. 84</cite>
+          </blockquote>
+          <blockquote className="quote">
+            “Interpret the data. Do not merely state what is contained in the table. Instead of ‘There was an increase
+            in tree height and trunk diameter as the weed-free area increased’, say ‘Growth increased as the size of the
+            weed-free area increased.’”
+            <cite>Bautista and Bondad, 1997, p. 85</cite>
+          </blockquote>
         </div>
       </section>
 
@@ -199,10 +198,14 @@ Mean weight of fruits  A=B>C=D`}
             and p. 69.
           </li>
         </ul>
-        <p className="text-muted mt-[var(--space-md)] text-[length:var(--text-sm)] [text-wrap:pretty]">
-          Page images on this site are photographs of the 1997 printing, shown for study of the method. Click any page
-          to open it at full size.
-        </p>
+        <h3 className="mt-[var(--space-lg)] text-[length:var(--text-md)]">Photographs</h3>
+        <ul className="mt-[var(--space-2xs)] space-y-[var(--space-3xs)] text-[length:var(--text-sm)]">
+          {(Object.keys(PHOTOS) as PhotoKey[]).map((k) => (
+            <li key={k}>
+              {PHOTOS[k].title}. <Credit photo={k} />
+            </li>
+          ))}
+        </ul>
       </section>
     </article>
   );

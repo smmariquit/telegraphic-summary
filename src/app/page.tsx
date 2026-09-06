@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import TableInput from "@/components/TableInput";
 import InterpretationDisplay from "@/components/InterpretationDisplay";
 import Guide from "@/components/Guide";
-import BookFigure from "@/components/BookFigure";
+import Photo from "@/components/Photo";
 import { telegraphic as summarize } from "@/lib/telegraphic";
 import type { Prose, TableData, Telegraphic } from "@/types";
 
@@ -175,18 +175,25 @@ export default function Home() {
               Summarize each row from its letters. Group the rows that agree. Turn each group into a sentence.
             </p>
 
-            {/* the book, in photographs */}
+            {/* the worked example: cucumber, and what the book says about it */}
             <div className="mt-[var(--space-xl)] grid gap-[var(--space-lg)] lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-              <BookFigure
-                fig="p81"
-                caption="Table 5, the book’s worked example. Every number carries a letter. Numbers that share a letter are not different; numbers with no letter in common are."
+              <Photo
+                photo="cucumber"
+                caption="The book’s worked example is a cucumber fertilizer trial: four formulations, eight measurements, one question."
                 priority
               />
-              <BookFigure
-                fig="p82"
-                caption="The same table, read. Eight rows collapse to two lines, and the two lines become two sentences."
-                priority
-              />
+              <div className="space-y-[var(--space-md)]">
+                <blockquote className="quote">
+                  “Look for the most striking aspect of the figure or table and state it, keeping in mind the objective
+                  of the experiment.”
+                  <cite>Bautista and Bondad, 1997, p. 80</cite>
+                </blockquote>
+                <blockquote className="quote">
+                  “Look for trends or patterns and state them. Avoid citing data one by one as they appear in a table.
+                  Do not enumerate all the information contained in a table but explain the general points.”
+                  <cite>Bautista and Bondad, 1997, p. 82</cite>
+                </blockquote>
+              </div>
             </div>
 
             {/* the method in one row, from Table 5 */}
@@ -320,8 +327,7 @@ export default function Home() {
           Revised 2012 as Bautista, Rosario, and Bautista Jr., Technical writing for publication in journals and for
           presentation, UPLB/UPLBFI, ISBN 978-971-547-303-3. Steps 1 and 2 computed locally from the mean-separation
           letters. Step 3 written by a language model under the book’s rules. Sample tables: Table 5 of the book and
-          four practice tables supplied with it. Page images are photographs of the 1997 printing, shown for study of
-          the method.
+          four practice tables supplied with it. Photographs from Wikimedia Commons, credited where shown.
         </p>
       </footer>
     </div>

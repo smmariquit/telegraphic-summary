@@ -296,21 +296,19 @@ h3 {
   margin: 0;
   min-width: 0;
 }
-.figure__link {
-  display: block;
-  border: var(--rule-hair) solid var(--color-rule-strong);
-  border-radius: var(--radius-input);
-  overflow: hidden;
-  background: var(--color-paper-2);
-  transition: border-color var(--dur-short) var(--ease-out);
-}
-.figure__link:hover {
-  border-color: var(--color-ink);
-}
-.figure__link img {
+.figure__img {
   display: block;
   width: 100%;
   height: auto;
+  border-radius: var(--radius-input);
+}
+.figure__thumb {
+  display: block;
+  width: 6rem;
+  height: 4rem;
+  object-fit: cover;
+  border-radius: var(--radius-input);
+  flex: none;
 }
 .figure__cap {
   margin-top: var(--space-2xs);
@@ -321,10 +319,7 @@ h3 {
 .figure__cite {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  white-space: nowrap;
-}
-.figure--thumb .figure__cap {
-  font-size: var(--text-xs);
+  overflow-wrap: anywhere;
 }
 
 /* a quotation from the book */
@@ -334,6 +329,9 @@ h3 {
   border-left: var(--rule-hair) solid var(--color-rule-strong);
   color: var(--color-ink);
   text-wrap: pretty;
+}
+.quote + .quote {
+  margin-top: var(--space-md);
 }
 .quote cite {
   display: block;
