@@ -49,7 +49,10 @@ export default function HighlightedTable({ tableData, rows, highlightedCells, fa
                 {h}
               </th>
             ))}
-            <th scope="col" className="py-[var(--space-2xs)] pl-[var(--space-lg)] text-left font-medium">
+            <th
+              scope="col"
+              className="hidden py-[var(--space-2xs)] pl-[var(--space-lg)] text-left font-medium sm:table-cell"
+            >
               Reads as
             </th>
           </tr>
@@ -89,7 +92,13 @@ export default function HighlightedTable({ tableData, rows, highlightedCells, fa
                       </td>
                     );
                   })}
-                  <td className="py-[var(--space-xs)] pl-[var(--space-lg)]">
+                  <td className="hidden py-[var(--space-xs)] pl-[var(--space-lg)] sm:table-cell">
+                    <Pattern row={row} headers={headers} size="sm" />
+                  </td>
+                </tr>
+                <tr className={`border-rule border-b sm:hidden ${isOpen ? "bg-paper-2" : ""}`}>
+                  <td colSpan={cols} className="py-[var(--space-2xs)]">
+                    <span className="text-muted mr-[var(--space-2xs)] text-[length:var(--text-xs)]">Reads as</span>
                     <Pattern row={row} headers={headers} size="sm" />
                   </td>
                 </tr>

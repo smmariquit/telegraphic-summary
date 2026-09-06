@@ -2,6 +2,7 @@
 
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Newsreader } from "next/font/google";
+import Shell from "@/components/Shell";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -25,16 +26,20 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
-  title: "Telegraphic Summary",
+  title: {
+    default: "Telegraphic Summary",
+    template: "%s · Telegraphic Summary",
+  },
   description:
     "Interpret a research data table with the telegraphic summary method of Bautista and Bondad (1997): summarize each row, group the rows, then write.",
+  metadataBase: new URL("https://telsum.stimmie.dev"),
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable} antialiased`}>
-        {children}
+        <Shell>{children}</Shell>
       </body>
     </html>
   );

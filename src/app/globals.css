@@ -393,3 +393,40 @@ h3 {
     transition: none;
   }
 }
+
+/* small button variant, for copy actions beside a heading */
+.btn--sm {
+  min-height: 2rem;
+  padding: 0 var(--space-xs);
+  font-size: var(--text-sm);
+}
+
+/* print: the worksheet result as a page of the paper */
+@media print {
+  :root {
+    --color-paper: #fff;
+    --color-paper-2: #f3f3f3;
+    --color-paper-3: #e8e8e8;
+  }
+  body {
+    font-size: 11pt;
+  }
+  .print\:hidden,
+  .btn,
+  .ghost,
+  .figure,
+  aside[aria-label="From the book"] {
+    display: none !important;
+  }
+  .stage {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .cell--top {
+    box-shadow: none;
+    outline: 1px solid var(--color-rule-strong);
+  }
+  a[href]::after {
+    content: "";
+  }
+}

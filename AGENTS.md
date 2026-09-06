@@ -10,8 +10,13 @@ Next.js 16 (App Router, React Compiler), React 19, TypeScript, Tailwind CSS 4, O
 
 - `src/lib/telegraphic.ts`: steps 1 and 2 of the method, deterministic. Parses `45ab` cells, builds `A=B>C=D` lines from letters, collapses equal rows, picks highlight cells. No model.
 - `src/lib/telegraphic.test.ts`: `npm test`. Asserts Table 5 of the book reproduces the book's groups, plus overlap, trend, and lower-is-better cases.
-- `src/app/api/analyze/route.ts`: Next route handler, POST /api/analyze. Step 3 only. Receives objective, table, finished summary, returns `{ sentences, paragraph }`. System prompt encodes the book's rules with page numbers. Needs `OPENAI_API_KEY`.
-- `src/app/page.tsx`: single client page. Objective (required), table input, results as three stages.
+- `src/app/api/analyze/route.ts`: POST /api/analyze. Same-site only (Sec-Fetch-Site or Origin), 32 KB body cap, validation from `prose.ts`, in-memory rate limit of 20 per 10 minutes per address. Returns `{ sentences, paragraph }`. Needs `OPENAI_API_KEY`.
+- `src/app/page.tsx`: the worksheet. Choose a table, state the objective, start. Pushes to `/t/<sample>?step=1&o=...` or `/t/custom?d=<base64url json>&o=...`.
+- `src/app/t/[id]/page.tsx`: the three stages for one table, step in the URL. Step 3 calls the API once. Print button.
+- `src/app/guide/page.tsx`: the Guide.
+- `src/components/Shell.tsx`: header, nav links, text size, footer. Used by `layout.tsx`.
+- `src/lib/samples.ts`: the five sample tables with slugs, and the custom-table URL codec.
+- `src/lib/prose.ts`: step 3 prompt, body validation with size caps, response parser. Tested in `prose.test.ts` with a recorded response, no key needed.
 - `src/components/`: TableInput (manual grid, CSV, five sample tables), HighlightedTable, InterpretationDisplay (stages 1.0, 2.0, 3.0), Guide.
 - `src/types/index.ts`: shared types, used by the function too.
 - `src/app/tokens.css`, `src/app/globals.css`: design tokens (Hallmark stamp at the top of tokens.css) and the few shared classes (`.field`, `.btn`, `.link`, `.stage`, `.cell--top`).

@@ -9,6 +9,7 @@ import { useEffect, useRef } from "react";
 import type { Prose, RowSummary, TableData, Telegraphic } from "@/types";
 import HighlightedTable from "./HighlightedTable";
 import Pattern from "./Pattern";
+import CopyButton from "./CopyButton";
 
 interface Props {
   tableData: TableData;
@@ -145,7 +146,10 @@ export default function InterpretationDisplay({
             </>
           }
         >
-          <ol className="divide-rule border-rule mt-[var(--space-md)] divide-y border-y">
+          <div className="mt-[var(--space-md)] flex justify-end">
+            <CopyButton text={telegraphic.summary} label="Copy summary" />
+          </div>
+          <ol className="divide-rule border-rule mt-[var(--space-2xs)] divide-y border-y">
             {groups.map((g, i) => (
               <li
                 key={g.pattern}
@@ -233,7 +237,10 @@ export default function InterpretationDisplay({
 
             {prose && !proseLoading && (
               <div className="rise">
-                <h3 className="mt-[var(--space-lg)] text-[length:var(--text-md)]">Sentences</h3>
+                <div className="mt-[var(--space-lg)] flex items-baseline justify-between gap-[var(--space-sm)]">
+                  <h3 className="text-[length:var(--text-md)]">Sentences</h3>
+                  <CopyButton text={prose.sentences.map((s, i) => `${i + 1}. ${s}`).join("\n")} />
+                </div>
                 <ol className="divide-rule border-rule mt-[var(--space-xs)] divide-y border-y">
                   {prose.sentences.map((s, i) => (
                     <li
@@ -247,7 +254,10 @@ export default function InterpretationDisplay({
                     </li>
                   ))}
                 </ol>
-                <h3 className="mt-[var(--space-lg)] text-[length:var(--text-md)]">Paragraph</h3>
+                <div className="mt-[var(--space-lg)] flex items-baseline justify-between gap-[var(--space-sm)]">
+                  <h3 className="text-[length:var(--text-md)]">Paragraph</h3>
+                  <CopyButton text={prose.paragraph} />
+                </div>
                 <p className="mt-[var(--space-xs)] leading-[1.7] [text-wrap:pretty]">{prose.paragraph}</p>
                 <p className="text-muted mt-[var(--space-sm)] text-[length:var(--text-sm)] [text-wrap:pretty]">
                   <span className="font-mono">[cite]</span> marks where the book expects a source from the literature
