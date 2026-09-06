@@ -54,7 +54,8 @@ Rules from the book, all mandatory:
 - Chapter 14, p106: accurate, brief, clear. Formal language. No literary language. No emotional words such as "unfortunately", "remarkably", "interestingly". No contractions. Do not write "The data shows" or "In comparison". Use "In this study" only to avoid confusion with cited work.
 - p113: the plant or animal changes, not the treatment. "Lighted plants had lower dry weight", not "Lighting plants had lower dry weight".
 - Avoid these wordy phrases (book list, p108 to 113): ${WORDY.map(([w, b]) => `"${w}" (use ${b})`).join("; ")}.
-- Use the treatment names exactly as given in the table headers.`;
+- Use the treatment names exactly as given in the table headers.
+- Every sentence must agree with its telegraphic line exactly. Treatments joined by "=" are equal; a treatment is lower only if it stands to the right of ">" in that line. In "A=B=D>C" only C is lower; D is not. Never move a treatment to the other side.`;
 
 export async function POST(request: Request) {
   try {
@@ -96,7 +97,7 @@ Respond ONLY with JSON: {"sentences": ["..."], "paragraph": "..."}`;
     const openai = new OpenAI({ apiKey });
     const res = await openai.chat.completions.create({
       model: "gpt-4o-mini",
-      temperature: 0.2,
+      temperature: 0,
       messages: [
         { role: "system", content: SYSTEM },
         { role: "user", content: prompt },
