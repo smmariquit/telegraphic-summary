@@ -161,7 +161,7 @@ export default function Home() {
             <ol className="mt-[var(--space-xl)] grid gap-[var(--space-md)] border-y border-rule py-[var(--space-md)] text-[length:var(--text-sm)] sm:grid-cols-3 sm:divide-x sm:divide-rule">
               <li className="sm:pr-[var(--space-md)]">
                 <p className="text-muted">1. A row of the table</p>
-                <p className="mt-[var(--space-2xs)] font-mono">
+                <p className="mt-[var(--space-2xs)] font-mono text-[length:var(--text-md)]">
                   1500<span className="letters">a</span> · 1300<span className="letters">a</span> · 600
                   <span className="letters">b</span> · 650<span className="letters">b</span>
                 </p>

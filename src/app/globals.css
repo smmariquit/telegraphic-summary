@@ -236,11 +236,10 @@ h3 {
   box-shadow: inset 0 -2px 0 var(--color-rule-strong);
 }
 .letters {
-  margin-left: 0.15em;
-  font-size: 0.8em;
-  font-weight: 600;
+  margin-left: 0.1em;
+  font-size: 1em;
+  font-weight: 700;
   color: var(--color-accent);
-  vertical-align: 0.15em;
 }
 
 /* telegraphic line as chips */
