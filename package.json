@@ -14,7 +14,7 @@
     "check": "npm run lint && npm run typecheck && npm run format:check && npm test"
   },
   "dependencies": {
-    "@sentry/nextjs": "^10.74.0",
+    "@sentry/nextjs": "^10.75.0",
     "next": "16.3.5",
     "openai": "^6.48.0",
     "react": "19.3.0",
@@ -28,7 +28,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
-    "prettier": "^3.9.6",
+    "prettier": "^3.9.8",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "^4",
     "typescript": "^5"
